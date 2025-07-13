@@ -13,7 +13,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // ===== RUTAS DE PRODUCTOS =====
+    //  RUTAS DE PRODUCTOS 
     Route::get('/critical-products', function () {
         return view('products.critical_products');
     })->name('critical.products');
@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('products.total_products');
     })->name('total.products');
 
-    // ===== RUTAS DEL MÓDULO DE ÁREA (INVENTARIO) =====
+    //  RUTAS DEL MÓDULO DE ÁREA (INVENTARIO) 
     // Surtido (ahora apunta a una vista existente de surtido)
     Route::get('/part-with-material', function () {
         return view('inventory.part_with_material');
