@@ -6,7 +6,7 @@
             <p class="text-gray-600 mt-2 text-sm">Seleccione la ubicación para el material</p>
         </div>
         <!-- Formulario - Contenedor principal del formulario de asignación -->
-        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 relative z-10">
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200">
             <form action="#" method="POST" class="p-8">
                 @csrf
                 <!-- Token CSRF para protección contra ataques de falsificación de solicitudes -->
@@ -27,7 +27,6 @@
                                 readonly
                                 title="Código único que identifica el material en el sistema"
                             >
-                            <!-- Campo readonly para mostrar información sin permitir cambios -->
                         </div>
                         <!-- Nombre del Material -->
                         <div>
@@ -77,7 +76,7 @@
                         <h3 class="text-lg font-medium text-[#2045c2] mb-6">Seleccionar Nueva Ubicación</h3>
                         <!-- Grid de 2 columnas para los selectores de ubicación -->
                         <div class="grid grid-cols-2 gap-6 mb-6">
-                            <!-- Selector de Almacén - Primera parte de la ubicación -->
+                            <!-- Selector de Almacén -->
                             <div>
                                 <label class="block text-base font-medium text-gray-700 mb-2">Almacén</label>
                                 <select
@@ -86,7 +85,6 @@
                                     required
                                     title="Seleccione el almacén donde se ubicará el material"
                                 >
-                                    <!-- Opciones de almacenes disponibles -->
                                     <option value="">Seleccione almacén</option>
                                     <option value="JW1" title="Almacén principal">JW1</option>
                                     <option value="JW2" title="Almacén secundario">JW2</option>
@@ -94,7 +92,7 @@
                                     <option value="JW4" title="Almacén de reserva">JW4</option>
                                 </select>
                             </div>
-                            <!-- Selector de Pasillo - Segunda parte de la ubicación -->
+                            <!-- Selector de Pasillo -->
                             <div>
                                 <label class="block text-base font-medium text-gray-700 mb-2">Pasillo</label>
                                 <select
@@ -103,7 +101,6 @@
                                     required
                                     title="Seleccione el pasillo donde se ubicará el material"
                                 >
-                                    <!-- Opciones de pasillos disponibles -->
                                     <option value="">Seleccione pasillo</option>
                                     <option value="P1" title="Pasillo 1 - Zona frontal">Pasillo 1</option>
                                     <option value="P2" title="Pasillo 2 - Zona central">Pasillo 2</option>
@@ -114,7 +111,7 @@
                         </div>
                         <!-- Segunda fila de selectores -->
                         <div class="grid grid-cols-2 gap-6">
-                            <!-- Selector de Columna - Tercera parte de la ubicación -->
+                            <!-- Selector de Columna -->
                             <div>
                                 <label class="block text-base font-medium text-gray-700 mb-2">Columna</label>
                                 <select
@@ -123,7 +120,6 @@
                                     required
                                     title="Seleccione la columna donde se ubicará el material"
                                 >
-                                    <!-- Opciones de columnas disponibles -->
                                     <option value="">Seleccione columna</option>
                                     <option value="A" title="Columna A - Lado izquierdo">A</option>
                                     <option value="B" title="Columna B - Centro izquierda">B</option>
@@ -131,7 +127,7 @@
                                     <option value="D" title="Columna D - Lado derecho">D</option>
                                 </select>
                             </div>
-                            <!-- Selector de Fila - Cuarta parte de la ubicación -->
+                            <!-- Selector de Fila -->
                             <div>
                                 <label class="block text-base font-medium text-gray-700 mb-2">Fila</label>
                                 <select
@@ -140,7 +136,6 @@
                                     required
                                     title="Seleccione la fila donde se ubicará el material"
                                 >
-                                    <!-- Opciones de filas disponibles -->
                                     <option value="">Seleccione fila</option>
                                     <option value="1" title="Fila 1 - Nivel inferior">1</option>
                                     <option value="2" title="Fila 2 - Nivel medio-bajo">2</option>
@@ -151,9 +146,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- Botones de acción - Controles para cancelar o guardar -->
+                <!-- Botones de acción -->
                 <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-                    <!-- Botón Cancelar - Regresa a la página anterior -->
                     <button
                         type="button"
                         onclick="history.back()"
@@ -162,7 +156,6 @@
                     >
                         Cancelar
                     </button>
-                    <!-- Botón Guardar - Envía el formulario -->
                     <button
                         type="submit"
                         class="px-6 py-3 text-lg font-medium text-white bg-[#2045c2] rounded-lg hover:bg-[#1a3aa3] shadow-md"
@@ -174,30 +167,30 @@
             </form>
         </div>
     </div>
-    <!-- De aquí es el código para el fondo de pantalla img pantalla completa -->
+    
+    <!-- Aquí cambié la imagen por el gradiente -->
     <div id="background-overlay" style="
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url('{{ asset('img/imgingreso.jpg') }}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background: linear-gradient(135deg, #2045c2 0%, #5a8ff2 50%, #b3d1ff 100%);
         z-index: -9999;
         pointer-events: none;
     "></div>
+    
     <!-- Script para ajustar el fondo y la visualización -->
     <script>
-        // Este script mejora la visualización del gradiente con el contenido
+        // Este script mejora la visualización y experiencia del usuario
         document.addEventListener('DOMContentLoaded', function() {
             const overlay = document.getElementById('background-overlay');
             document.body.prepend(overlay);
-            // Fondo semitransparente
-            const mainContainer = document.querySelector('.min-h-screen');
+            
+            // fondo semitransparente
+            const mainContainer = document.querySelector('.p-6');
             if (mainContainer) {
-                mainContainer.style.backgroundColor = 'rgba(19, 18, 18, 0.4)';
+                mainContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
             }
         });
     </script>
