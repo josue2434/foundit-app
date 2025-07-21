@@ -4,13 +4,11 @@
         <div class="mb-6">
             <h1 class="text-2xl font-semibold text-[#2045c2] inline-block bg-white bg-opacity-40 px-4 py-2 rounded" title="Página para gestionar la salida de materiales del almacén">SURTIR MATERIAL</h1>
         </div>
-
         <!-- Formulario principal - Gestiona la salida de materiales -->
         <form action="{{ route('Exist_Material') }}" method="POST" class="relative z-10">
             @csrf
             @method('PUT')
             <!-- Método PUT para actualizar registros existentes -->
-
             <!-- Contenedor con scroll horizontal - Permite visualizar múltiples materiales -->
             <div class="w-full overflow-x-auto pb-4" title="Deslice horizontalmente para ver todos los materiales disponibles">
                 <!-- Materiales en fila horizontal - Muestra los materiales disponibles para surtir -->
@@ -50,7 +48,6 @@
                                 <dd class="text-lg font-semibold text-[#2045c2]" title="100 unidades disponibles">100</dd>
                             </div>
                         </dl>
-
                         <!-- Controles para surtir material -->
                         <div class="flex flex-col space-y-3">
                             <!-- Selector de cantidad a surtir -->
@@ -75,7 +72,6 @@
                                     <span class="ml-2 text-sm text-gray-500">unidades</span>
                                 </div>
                             </div>
-
                             <!-- Botón para localizar el material en el almacén -->
                             <button
                                 type="button"
@@ -115,33 +111,32 @@
             </div>
         </form>
     </div>
-    <!-- De aquí es el código para el fondo de pantalla img pantalla completa -->
+    
+    <!-- Aquí cambié la imagen por el gradiente -->
     <div id="background-overlay" style="
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url('{{ asset('img/img3.jpg') }}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background: linear-gradient(135deg, #2045c2 0%, #5a8ff2 50%, #b3d1ff 100%);
         z-index: -9999;
         pointer-events: none;
     "></div>
+    
     <!-- Script para ajustar el fondo y la visualización -->
     <script>
         // Este script mejora la visualización y experiencia del usuario
         document.addEventListener('DOMContentLoaded', function() {
             const overlay = document.getElementById('background-overlay');
             document.body.prepend(overlay);
-
-            // fondo semitransparente
-            const mainContainer = document.querySelector('.min-h-screen');
+            
+            // fondo semitransparente (opcional, puedes quitarlo si no lo necesitas)
+            const mainContainer = document.querySelector('.p-6');
             if (mainContainer) {
-                mainContainer.style.backgroundColor = 'rgba(19, 18, 18, 0.4)';
+                mainContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
             }
-
+            
             // Añade efecto de hover a las tarjetas de materiales
             const materialCards = document.querySelectorAll('.flex-none');
             materialCards.forEach(card => {
