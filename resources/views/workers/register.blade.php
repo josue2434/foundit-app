@@ -5,7 +5,7 @@
     <div class="min-h-screen flex items-center justify-center p-6">
         <!-- Formulario de Nuevo Empleado -->
         <div class="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 relative z-10">
-            <form action="" method="POST" class="p-8">
+            <form action="{{route('register')}}" method="POST" class="p-8">
                 @csrf
                 <div class="space-y-6">
                     <!-- Header -->
@@ -32,6 +32,27 @@
                             title="Ingrese el nombre completo del trabajador"
                         >
                         @error('name')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-base font-medium text-gray-700 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            Apellido
+                        </label>
+                        <input
+                            type="text"
+                            name="apellido"
+                            value="{{ old('apellido') }}"
+                            placeholder="Ingrese el apellido del trabajador"
+                            class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200"
+                            required
+                            title="Ingrese el apellido del trabajador"
+                        >
+                        @error('apellido')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -111,8 +132,8 @@
                             class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white" 
                             title="Seleccione el nivel de permisos que tendrá el trabajador"
                         >
-                            <option value="oper" {{ old('rol') == 'oper' ? 'selected' : '' }} title="Acceso limitado a funciones operativas">Operador</option>
-                            <option value="adm" {{ old('rol') == 'adm' ? 'selected' : '' }} title="Acceso completo a todas las funciones del sistema">Administrador</option>
+                            <option value="operador" {{ old('tipo') == 'operador' ? 'selected' : '' }} title="Acceso limitado a funciones operativas">Operador</option>
+                            <option value="admin" {{ old('tipo') == 'admin' ? 'selected' : '' }} title="Acceso completo a todas las funciones del sistema">Administrador</option>
                         </select>
                         @error('rol')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -120,7 +141,7 @@
                     </div>
 
                     <!-- Estatus -->
-                    <div>
+                {{--     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -144,7 +165,7 @@
                                 </span>
                             </label>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <!-- Botones de Acción -->
@@ -196,7 +217,7 @@
                 }
             }
             
-            // Event listeners para validación en tiempo real
+            // Event listeners para validación en tiempo real   
             password.addEventListener('input', validatePasswordMatch);
             confirmPassword.addEventListener('input', validatePasswordMatch);
             
