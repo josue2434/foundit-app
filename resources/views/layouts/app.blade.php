@@ -120,7 +120,7 @@
                     </a>
 
                     <!-- Trabajadores -->
-                    <a href="{{ route('workers') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('workers') ? 'bg-white text-[#2045c2]' : 'text-white hover:bg-white/10' }} transition-all duration-150">
+                    <a href="{{ route('view_workers') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('workers') ? 'bg-white text-[#2045c2]' : 'text-white hover:bg-white/10' }} transition-all duration-150">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
@@ -143,11 +143,11 @@
                     </div>
 
                     <div class="ml-3 flex flex-col max-w-[150px]">
-                        <div class="text-sm font-medium text-white truncate">{{ auth()->user()->name }}</div>
-                        <div class="text-xs text-white/70 truncate">{{ auth()->user()->email }}</div>
+                        <div class="text-sm font-medium text-white truncate">{{ session_user()->name ?? 'Usuario' }}</div>
+                        <div class="text-xs text-white/70 truncate">{{ session_user()->email ?? '' }}</div>
                     </div>
 
-                    <form action="{{ route('logout_user') }}" method="POST" class="ml-auto">
+                    <form action="{{ route('logout') }}" method="POST" class="ml-auto">
                         @csrf
                         <button type="submit" class="p-1 rounded-lg text-white hover:bg-white/10 transition-all duration-150" title="Cerrar sesión">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
