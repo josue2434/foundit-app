@@ -110,12 +110,15 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
-        ],
- 'mongodb' => [
+        ], 
+        
+        'mongodb' => [
             'driver' => 'mongodb',
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '27017'),
-            'database' => env('DB_DATABASE', 'founditapp'),
+            'dsn' => env('DB_URI'),
+            'database' => env('DB_DATABASE', 'foundit'),
+            'options' => [
+                'appName' => 'FoundIt',
+            ],
         ],
     ],
 

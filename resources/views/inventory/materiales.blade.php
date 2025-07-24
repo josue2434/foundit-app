@@ -44,27 +44,17 @@
                 </div>
                 <!-- Filtros - Selectores para filtrar por diferentes criterios -->
                 <div class="flex flex-wrap gap-4">
-                    <!-- Selector de categorías -->
-                    <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar materiales por categoría">
-                        <option value="">Todas las categorías</option>
-                        <option value="ferreteria">Ferretería</option>
-                        <option value="electronica">Electrónica</option>
-                        <option value="herramientas">Herramientas</option>
-                    </select>
-                    <!-- Selector de ordenamiento -->
-                    <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Cambiar el orden de visualización de los materiales">
-                        <option value="">Ordenar por</option>
-                        <option value="codigo">Código</option>
-                        <option value="nombre">Nombre</option>
-                        <option value="ubicacion">Ubicación</option>
-                    </select>
                     <!-- Selector de almacenes -->
                     <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar materiales por almacén">
                         <option value="">Todos los almacenes</option>
-                        <option value="JW1">JW1</option>
-                        <option value="JW2">JW2</option>
-                        <option value="JW3">JW3</option>
-                        <option value="JW4">JW4</option>
+                        <option value="almacen">Almacén</option>
+                        <option value="homeoffice">Almacen de HomeOffice</option>
+                    </select>
+                    <!-- Selector de movimientos -->
+                    <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar por tipo de movimiento">
+                        <option value="">Todos los movimientos</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="salida">Salida</option>
                     </select>
                 </div>
             </div>

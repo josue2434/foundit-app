@@ -2,7 +2,7 @@
     <div class="min-h-screen flex items-center justify-center p-6">
         <!-- Formulario de Nuevo Empleado -->
         <div class="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 relative z-10">
-            <form action="" method="POST" class="p-8">
+            <form action="{{route('registerUser')}}" method="POST" class="p-8">
                 @csrf
                 <div class="space-y-6">
                     <!-- Header -->
@@ -31,6 +31,28 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <div>
+                        <label class="block text-base font-medium text-gray-700 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            Apellido
+                        </label>
+                        <input
+                            type="text"
+                            name="apellido"
+                            value="{{ old('apellido') }}"
+                            placeholder="Ingrese el apellido del trabajador"
+                            class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200"
+                            required
+                            title="Ingrese el apellido del trabajador"
+                        >
+                        @error('apellido')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <!-- Email -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -106,17 +128,23 @@
                         <select 
                             name="rol"
                             class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white"
+                            name="tipo" 
+                            class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white" 
                             title="Seleccione el nivel de permisos que tendrá el trabajador"
+                            required
                         >
                             <option value="oper"  title="Acceso limitado a funciones operativas">Operador</option>
                             <option value="adm"  title="Acceso completo a todas las funciones del sistema">Administrador</option>
+                            <option value="">Seleccione un tipo de usuario</option>
+                            <option value="operador" {{ old('tipo') == 'operador' ? 'selected' : '' }} title="Acceso limitado a funciones operativas">Operador</option>
+                            <option value="admin" {{ old('tipo') == 'admin' ? 'selected' : '' }} title="Acceso completo a todas las funciones del sistema">Administrador</option>
                         </select>
-                        @error('rol')
+                        @error('tipo')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                     <!-- Estatus -->
-                    <div>
+                {{--     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             Estatus
                         </label>
@@ -131,6 +159,8 @@
                             </label>
                         </div>
                     </div>
+                    </div> --}}
+                </div>
 
 
 
@@ -246,16 +276,22 @@
             const errorDiv = document.getElementById('password-match-error');
             const submitBtn = document.getElementById('submit-btn');
                         
+            const form = document.querySelector('form');
+            const name = document.querySelector('input[name="name"]');
+            const apellido = document.querySelector('input[name="apellido"]');
+            const email = document.querySelector('input[name="email"]');
+            const tipo = document.querySelector('select[name="tipo"]');
+            
             // Función para validar coincidencia de contraseñas
             function validatePasswordMatch() {
                 if (confirmPassword.value && password.value !== confirmPassword.value) {
                     confirmPassword.setCustomValidity('Las contraseñas no coinciden');
                     errorDiv.classList.remove('hidden');
-                    submitBtn.disabled = true;
+                    return false;
                 } else {
                     confirmPassword.setCustomValidity('');
                     errorDiv.classList.add('hidden');
-                    submitBtn.disabled = false;
+                    return true;
                 }
             }
                         
@@ -265,13 +301,171 @@
                         
             // Validación adicional del formulario
             const form = document.querySelector('form');
+            
+            // Función para validar todos los campos requeridos
+            function validateRequiredFields() {
+                const requiredFields = [name, apellido, email, password, confirmPassword, tipo];
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                    }
+                });
+                
+                return isValid && validatePasswordMatch();
+            }
+            
+            // Función para actualizar el estado del botón
+            function updateSubmitButton() {
+                submitBtn.disabled = !validateRequiredFields();
+            }
+            
+            // Event listeners para validación en tiempo real   
+            password.addEventListener('input', function() {
+                validatePasswordMatch();
+                updateSubmitButton();
+            });
+            
+            confirmPassword.addEventListener('input', function() {
+                validatePasswordMatch();
+                updateSubmitButton();
+            });
+            
+            // Event listeners para campos requeridos
+            [name, apellido, email, tipo].forEach(field => {
+                field.addEventListener('input', updateSubmitButton);
+                field.addEventListener('change', updateSubmitButton);
+            });
+            
+            // Validación del formulario antes del envío
             form.addEventListener('submit', function(e) {
+                // Validar que todos los campos requeridos estén llenos
+                if (!validateRequiredFields()) {
+                    e.preventDefault();
+                    alert('Por favor, complete todos los campos requeridos.');
+                    return false;
+                }
+                
+                // Validar coincidencia de contraseñas
                 if (password.value !== confirmPassword.value) {
                     e.preventDefault();
                     validatePasswordMatch();
                     confirmPassword.focus();
+                    return false;
                 }
+                
+                // Validar formato de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    e.preventDefault();
+                    alert('Por favor, ingrese un email válido.');
+                    email.focus();
+                    return false;
+                }
+                
+                // Validar longitud de contraseña
+                if (password.value.length < 6) {
+                    e.preventDefault();
+                    alert('La contraseña debe tener al menos 6 caracteres.');
+                    password.focus();
+                    return false;
+                }
+                
+                // Si todo está correcto, mostrar loading
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Guardando...
+                `;
+                submitBtn.disabled = true;
             });
         });
     </script>
+</x-app-layout>
+            
+            // Mejorar la experiencia visual de los campos
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('ring-2', 'ring-[#2045c2]', 'ring-opacity-20');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('ring-2', 'ring-[#2045c2]', 'ring-opacity-20');
+                });
+            });
+            
+            // Inicializar estado del botón
+            updateSubmitButton();
+        });
+    </script>
+
+    <style>
+        /* Estilos adicionales para mejorar la apariencia */
+        .transition-all {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(32, 69, 194, 0.1);
+        }
+        
+        /* Mejorar la apariencia del select */
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+        
+        /* Animación suave para los botones */
+        button:hover, a:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* Mejorar la apariencia de los radio buttons */
+        input[type="radio"]:checked {
+            background-color: #2045c2;
+            border-color: #2045c2;
+        }
+        
+        /* Animación de spinner */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Estilos para campos requeridos */
+        input:required:invalid {
+            border-color: #fca5a5;
+        }
+        
+        input:required:valid {
+            border-color: #86efac;
+        }
+        
+        /* Estado deshabilitado del botón */
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button:disabled:hover {
+            transform: none;
+        }
+    </style>
 </x-app-layout>

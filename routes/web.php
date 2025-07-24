@@ -1,7 +1,12 @@
 <?php
 
+use App\Http\Controllers\Almacen\MaterialesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Users\createUserController;
+use App\Http\Controllers\Users\getUsersController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 Route::get('/', function () {
     return view('welcome');
@@ -9,9 +14,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware('session.auth')->name('dashboard');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['session.auth'])->group(function () {
 
     //  RUTAS DE PRODUCTOS 
     Route::get('/critical-products', function () {
@@ -33,9 +38,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('part.with.material');
 
     // Almacén
-    Route::get('/stock-view', function () {
+    /* Route::get('/stock-view', function () {
         return view('inventory.stock_view');
-    })->name('stock.view');
+    })->name('stock.view'); */
+    Route::get('/stock-view',[MaterialesController::class, 'index'])->name('stock.view'); 
+    Route::get('/view-stock', [MaterialesController::class, 'gestionEmbarques'])->name('view-stock'); // Alias para compatibilidad con el nombre anterior en la barra lateral
 
     // Recibo/Entrada
     Route::get('/gestion-embarques', function () {
@@ -89,9 +96,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('reporte.index');
     })->name('reports');
 
-    Route::get('/workers', function () {
-        return view('workers.workers');
-    })->name('workers');
+    Route::get('/workers', [getUsersController::class, 'index'])->name('workers');
+
+    Route::get('/view-workers', [getUsersController::class, 'index'])->name('view_workers');
 
     // Formularios de gestión de trabajadores
     Route::get('/register-workers', function () {
@@ -107,17 +114,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return redirect()->route('profile.edit');
     })->name('user.profile');
 
-    Route::post('/logout-user', function () {
-        auth()->logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-        return redirect('/');
-    })->name('logout_user');
-
     // ===== RUTAS DE ACCIONES (POST/PUT) - General =====
     Route::post('/register-user', function () {
         return redirect()->route('workers')->with('mensaje', 'Trabajador registrado exitosamente');
     })->name('Register_user');
+
+    Route::post('/register-user',[createUserController::class, 'store'])->name('registerUser'); //controller para registrar al usuario
 
     Route::put('/update-user/{id}', function ($id) {
         return redirect()->route('workers')->with('mensaje', 'Trabajador actualizado exitosamente');
@@ -125,7 +127,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // ===== RUTAS DE PERFIL DE BREEZE =====
-Route::middleware('auth')->group(function () {
+Route::middleware('session.auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

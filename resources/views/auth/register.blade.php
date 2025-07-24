@@ -9,11 +9,30 @@
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
+        <!-- apellido -->
+        <div>
+            <x-input-label for="apellido" :value="__('Apellido')" />
+            <x-text-input id="apellido" class="block mt-1 w-full" type="text" name="apellido" :value="old('apellido')" required autofocus autocomplete="apellido" />
+            <x-input-error :messages="$errors->get('apellido')" class="mt-2" />
+        </div>
+
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <!-- tipo -->
+        <div class="mt-4">
+            <x-input-label for="tipo" :value="__('Tipo de Usuario')" />
+            <select id="tipo" name="tipo" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                <option value="">Selecciona un tipo</option>
+                <option value="admin" {{ old('tipo') == 'admin' ? 'selected' : '' }}>Administrador</option>
+                <option value="user" {{ old('tipo') == 'operador' ? 'selected' : '' }}>Usuario</option>
+                
+            </select>
+            <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
         </div>
 
         <!-- Password -->

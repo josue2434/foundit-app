@@ -52,95 +52,55 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-[#e6ebfa]">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Nombre completo del trabajador">Nombre</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Nombre completo del trabajador">Nombre Completo</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Correo electrónico del trabajador">Correo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Puesto de trabajo del trabajador">Puesto</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Departamento al que pertenece el trabajador">Departamento</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Rol del trabajador en el sistema">Rol</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Estado actual del trabajador (activo/inactivo)">Estado</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Opciones para editar o eliminar">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Fila de ejemplo 1 -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Juan Pérez</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">juan.perez@example.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Operador</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Producción</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Usuario</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Activo
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                <a href="{{ route('edit_workers', ['id' => 1]) }}" class="inline-block text-[#2045c2] hover:text-[#1a3aa3] transition-colors duration-150" title="Editar información del trabajador">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                </a>
-                                <button type="button" class="inline-block text-red-600 hover:text-red-900 transition-colors duration-150" onclick="return confirm('¿Está seguro que desea eliminar este empleado?')" title="Eliminar trabajador del sistema">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Fila de ejemplo 2 -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">María García</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">maria.garcia@example.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Supervisor</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Logística</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Administrador</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Activo
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                <a href="{{ route('edit_workers', ['id' => 2]) }}" class="inline-block text-[#2045c2] hover:text-[#1a3aa3] transition-colors duration-150" title="Editar información del trabajador">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                </a>
-                                <button type="button" class="inline-block text-red-600 hover:text-red-900 transition-colors duration-150" onclick="return confirm('¿Está seguro que desea eliminar este empleado?')" title="Eliminar trabajador del sistema">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Fila de ejemplo 3 -->
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Carlos Ruiz</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">carlos.ruiz@example.com</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Operador</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Almacén</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Usuario</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                    Inactivo
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                <a href="{{ route('edit_workers', ['id' => 3]) }}" class="inline-block text-[#2045c2] hover:text-[#1a3aa3] transition-colors duration-150" title="Editar información del trabajador">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                </a>
-                                <button type="button" class="inline-block text-red-600 hover:text-red-900 transition-colors duration-150" onclick="return confirm('¿Está seguro que desea eliminar este empleado?')" title="Eliminar trabajador del sistema">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
+                        @if(isset($users) && count($users) > 0)
+                            @foreach ($users as $user )
+                            
+                            <!-- Fila de ejemplo 1 -->
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$user['name'] ?? 'N/A'}} {{$user['apellido'] ?? ''}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user['email'] ?? 'N/A'}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user['tipo'] ?? 'N/A'}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Activo
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                    <a href="{{ route('edit_workers', ['id' => $user['_id'] ?? 1]) }}" class="inline-block text-[#2045c2] hover:text-[#1a3aa3] transition-colors duration-150" title="Editar información del trabajador">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    <button type="button" class="inline-block text-red-600 hover:text-red-900 transition-colors duration-150" onclick="return confirm('¿Está seguro que desea eliminar este empleado?')" title="Eliminar trabajador del sistema">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    @if(isset($error))
+                                        <div class="text-red-600">{{ $error }}</div>
+                                    @else
+                                        No hay usuarios registrados.
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
+                        
                     </tbody>
                 </table>
-                <!-- Mensaje cuando no hay usuarios -->
-                <p class="p-4 text-gray-500">No hay usuarios registrados.</p>
             </div>
         </div>
     </div>

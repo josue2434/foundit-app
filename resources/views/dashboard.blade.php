@@ -9,7 +9,7 @@
     <!-- Contenido principal - iframe -->
     <div class="bg-white bg-opacity-95 rounded-lg shadow-lg overflow-hidden">
         <iframe 
-            src="http://192.168.1.200/" 
+            src="http://192.168.1.200/" {{-- ip ESP32 --}} 
             width="100%" 
             height="600px" 
             style="border: none;"
