@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Almacen\MaterialesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Users\createUserController;
 use App\Http\Controllers\Users\getUsersController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -117,6 +118,8 @@ Route::middleware(['session.auth'])->group(function () {
     Route::post('/register-user', function () {
         return redirect()->route('workers')->with('mensaje', 'Trabajador registrado exitosamente');
     })->name('Register_user');
+
+    Route::post('/register-user',[createUserController::class, 'store'])->name('registerUser'); //controller para registrar al usuario
 
     Route::put('/update-user/{id}', function ($id) {
         return redirect()->route('workers')->with('mensaje', 'Trabajador actualizado exitosamente');
