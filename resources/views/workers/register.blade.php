@@ -5,7 +5,7 @@
     <div class="min-h-screen flex items-center justify-center p-6">
         <!-- Formulario de Nuevo Empleado -->
         <div class="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 relative z-10">
-            <form action="{{route('register')}}" method="POST" class="p-8">
+            <form action="{{route('registerUser')}}" method="POST" class="p-8">
                 @csrf
                 <div class="space-y-6">
                     <!-- Header -->
@@ -128,14 +128,16 @@
                             Permisos de Usuario
                         </label>
                         <select 
-                            name="rol" 
+                            name="tipo" 
                             class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white" 
                             title="Seleccione el nivel de permisos que tendrá el trabajador"
+                            required
                         >
+                            <option value="">Seleccione un tipo de usuario</option>
                             <option value="operador" {{ old('tipo') == 'operador' ? 'selected' : '' }} title="Acceso limitado a funciones operativas">Operador</option>
                             <option value="admin" {{ old('tipo') == 'admin' ? 'selected' : '' }} title="Acceso completo a todas las funciones del sistema">Administrador</option>
                         </select>
-                        @error('rol')
+                        @error('tipo')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -203,32 +205,104 @@
             const confirmPassword = document.querySelector('input[name="password_confirmation"]');
             const errorDiv = document.getElementById('password-match-error');
             const submitBtn = document.getElementById('submit-btn');
+            const form = document.querySelector('form');
+            const name = document.querySelector('input[name="name"]');
+            const apellido = document.querySelector('input[name="apellido"]');
+            const email = document.querySelector('input[name="email"]');
+            const tipo = document.querySelector('select[name="tipo"]');
             
             // Función para validar coincidencia de contraseñas
             function validatePasswordMatch() {
                 if (confirmPassword.value && password.value !== confirmPassword.value) {
                     confirmPassword.setCustomValidity('Las contraseñas no coinciden');
                     errorDiv.classList.remove('hidden');
-                    submitBtn.disabled = true;
+                    return false;
                 } else {
                     confirmPassword.setCustomValidity('');
                     errorDiv.classList.add('hidden');
-                    submitBtn.disabled = false;
+                    return true;
                 }
             }
             
-            // Event listeners para validación en tiempo real   
-            password.addEventListener('input', validatePasswordMatch);
-            confirmPassword.addEventListener('input', validatePasswordMatch);
+            // Función para validar todos los campos requeridos
+            function validateRequiredFields() {
+                const requiredFields = [name, apellido, email, password, confirmPassword, tipo];
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                    }
+                });
+                
+                return isValid && validatePasswordMatch();
+            }
             
-            // Validación adicional del formulario
-            const form = document.querySelector('form');
+            // Función para actualizar el estado del botón
+            function updateSubmitButton() {
+                submitBtn.disabled = !validateRequiredFields();
+            }
+            
+            // Event listeners para validación en tiempo real   
+            password.addEventListener('input', function() {
+                validatePasswordMatch();
+                updateSubmitButton();
+            });
+            
+            confirmPassword.addEventListener('input', function() {
+                validatePasswordMatch();
+                updateSubmitButton();
+            });
+            
+            // Event listeners para campos requeridos
+            [name, apellido, email, tipo].forEach(field => {
+                field.addEventListener('input', updateSubmitButton);
+                field.addEventListener('change', updateSubmitButton);
+            });
+            
+            // Validación del formulario antes del envío
             form.addEventListener('submit', function(e) {
+                // Validar que todos los campos requeridos estén llenos
+                if (!validateRequiredFields()) {
+                    e.preventDefault();
+                    alert('Por favor, complete todos los campos requeridos.');
+                    return false;
+                }
+                
+                // Validar coincidencia de contraseñas
                 if (password.value !== confirmPassword.value) {
                     e.preventDefault();
                     validatePasswordMatch();
                     confirmPassword.focus();
+                    return false;
                 }
+                
+                // Validar formato de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email.value)) {
+                    e.preventDefault();
+                    alert('Por favor, ingrese un email válido.');
+                    email.focus();
+                    return false;
+                }
+                
+                // Validar longitud de contraseña
+                if (password.value.length < 6) {
+                    e.preventDefault();
+                    alert('La contraseña debe tener al menos 6 caracteres.');
+                    password.focus();
+                    return false;
+                }
+                
+                // Si todo está correcto, mostrar loading
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Guardando...
+                `;
+                submitBtn.disabled = true;
             });
             
             // Mejorar la experiencia visual de los campos
@@ -242,6 +316,9 @@
                     this.parentElement.classList.remove('ring-2', 'ring-[#2045c2]', 'ring-opacity-20');
                 });
             });
+            
+            // Inicializar estado del botón
+            updateSubmitButton();
         });
     </script>
 
@@ -274,6 +351,40 @@
         input[type="radio"]:checked {
             background-color: #2045c2;
             border-color: #2045c2;
+        }
+        
+        /* Animación de spinner */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Estilos para campos requeridos */
+        input:required:invalid {
+            border-color: #fca5a5;
+        }
+        
+        input:required:valid {
+            border-color: #86efac;
+        }
+        
+        /* Estado deshabilitado del botón */
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button:disabled:hover {
+            transform: none;
         }
     </style>
 </x-app-layout>

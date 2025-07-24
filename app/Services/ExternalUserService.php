@@ -133,7 +133,6 @@ class ExternalUserService
 
     }
 
-
     /**
      * Cerrar sesión en la API externa (invalidar token)
      */
