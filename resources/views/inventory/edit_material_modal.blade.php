@@ -15,8 +15,8 @@
             <form action="#" method="POST" class="p-8">
                 @csrf
                 <!-- Token CSRF para protección contra ataques de falsificación de solicitudes -->
-                <input type="hidden" name="material_id" value="1"> {{-- Campo oculto para ID del material --}}
-                <input type="hidden" name="detalle_id" value="1"> {{-- Campo oculto para ID del detalle --}}
+                <input type="hidden" name="material_id" value="1">   <!---- Campo oculto para ID del material -->
+                <input type="hidden" name="detalle_id" value="1">  <!--Campo oculto para ID del detalle-->
                 <div class="space-y-6">
                     <!-- Sección de información del material (No editable) -->
                     <div class="grid grid-cols-2 gap-6 pb-6 border-b border-gray-200">
