@@ -1,11 +1,8 @@
 <x-app-layout>
-    <!-- linea de gradiente  -->
-    <div class="fixed top-0 left-0 w-full h-screen bg-gradient-to-br from-[#2045c2] via-[#5a8ff2] to-[#b3d1ff]"></div>
-
     <div class="min-h-screen flex items-center justify-center p-6">
         <!-- Formulario de Edición de Empleado -->
         <div class="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 relative z-10">
-           
+            <form action="#" method="POST" class="p-8">
                 @csrf
                 @method('PUT')
                 <div class="space-y-6">
@@ -14,7 +11,6 @@
                         <h1 class="text-2xl font-semibold text-[#2045c2]">EDITAR TRABAJADOR</h1>
                         <p class="text-gray-600 mt-1">Modifique los detalles del trabajador</p>
                     </div>
-
                     <!-- Nombre -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -30,7 +26,6 @@
                             title="Modifique el nombre completo del trabajador"
                         >
                     </div>
-
                     <!-- Email -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -46,7 +41,6 @@
                             title="Modifique el correo electrónico del trabajador"
                         >
                     </div>
-
                     <!-- Contraseña -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -60,7 +54,6 @@
                             title="Deje este campo en blanco si no desea cambiar la contraseña actual"
                         >
                     </div>
-
                     <!-- Confirmar Contraseña -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -74,6 +67,9 @@
                             title="Repita la nueva contraseña para confirmar que coincide"
                         >
                     </div>
+                   
+
+
 
                     <!-- Permisos de Administrador -->
                     <div>
@@ -81,11 +77,10 @@
                             Permisos de Usuario
                         </label>
                         <select name="rol" class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]" title="Modifique el nivel de permisos del trabajador">
-                            <option value="adm" {{ old('rol', 'adm') == 'adm' ? 'selected' : '' }} title="Acceso completo a todas las funciones del sistema">Administrador</option>
-                            <option value="oper" {{ old('rol', 'adm') == 'oper' ? 'selected' : '' }} title="Acceso limitado a funciones operativas">Operador</option>
+                            <option value="adm" title="Acceso completo a todas las funciones del sistema">Administrador</option>
+                            <option value="oper"  title="Acceso limitado a funciones operativas">Operador</option>
                         </select>
                     </div>
-
                     <!-- Estatus -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -93,15 +88,65 @@
                         </label>
                         <div class="flex items-center space-x-4">
                             <label class="inline-flex items-center" title="El trabajador podrá acceder al sistema">
-                                <input type="radio" name="activo" value="1" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" {{ old('activo', '1') == '1' ? 'checked' : '' }}>
+                                <input type="radio" name="activo" value="1" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" >
                                 <span class="ml-2 text-gray-700">Activo</span>
                             </label>
                             <label class="inline-flex items-center" title="El trabajador no podrá acceder al sistema">
-                                <input type="radio" name="activo" value="0" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" {{ old('activo', '1') == '0' ? 'checked' : '' }}>
+                                <input type="radio" name="activo" value="0" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" >
                                 <span class="ml-2 text-gray-700">Inactivo</span>
                             </label>
                         </div>
                     </div>
+
+
+
+
+
+
+             <!-- Almacén Asignado -->
+                    <div>
+                        <label class="block text-base font-medium text-gray-700 mb-2">
+                            Almacén Asignado
+                        </label>
+                        <select
+                            name="almacen"
+                            class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50"
+                            required
+                            title="Seleccione el almacén donde trabajará el empleado"
+                        >
+                            <option value="">Seleccione almacén</option>
+                            <option value="JW1"  title="Almacén principal">JW1 - Almacén Principal</option>
+                            <option value="JW2"  title="Almacén secundario">JW2 - Almacén Secundario</option>
+                           
+                        </select>
+                    </div>
+                    <!-- Estante Asignado -->
+                    <div>
+                        <label class="block text-base font-medium text-gray-700 mb-2">
+                            Estante Asignado
+                        </label>
+                        <select
+                            name="estante"
+                            class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50"
+                            required
+                            title="Seleccione el estante específico donde trabajará el empleado"
+                        >
+                            <option value="">Seleccione estante</option>
+                            <option value="E1"  title="Estante 1 - Zona A">E1 - Zona A</option>
+                            <option value="E2" title="Estante 2 - Zona B">E2 - Zona B</option>
+                            
+                        </select>
+                    </div>
+
+
+
+
+
+
+
+
+
+
 
                     <!-- Fecha de Registro (Solo lectura) -->
                     <div>
@@ -117,7 +162,6 @@
                         >
                     </div>
                 </div>
-
                 <!-- Botones de Acción -->
                 <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
                     <a 
@@ -144,4 +188,31 @@
             </form>
         </div>
     </div>
+    
+    <!-- color del gradiente -->
+    <div id="background-overlay" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #2045c2 0%, #5a8ff2 50%, #b3d1ff 100%);
+        z-index: -9999;
+        pointer-events: none;
+    "></div>
+    
+    <!-- Script para ajustar el fondo y la visualización -->
+    <script>
+        // Este script mejora la visualización  del usuario
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('background-overlay');
+            document.body.prepend(overlay);
+            
+            // fondo semitransparente
+            const mainContainer = document.querySelector('.min-h-screen');
+            if (mainContainer) {
+                mainContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+    </script>
 </x-app-layout>
