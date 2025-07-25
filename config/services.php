@@ -17,7 +17,7 @@ return [
 
 
     'external_api' => [
-        'base_url' => env('EXTERNAL_API_BASE_URL', 'http://98.71.33.93:3000'),
+        'base_url' => env('EXTERNAL_API_BASE_URL', 'http://192.168.100.22:3000'),
         'timeout' => env('EXTERNAL_API_TIMEOUT', 30),
     ],
 

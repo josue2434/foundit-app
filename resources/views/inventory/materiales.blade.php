@@ -4,22 +4,52 @@
         <div class="mb-6 flex justify-between items-center">
             <!-- Título con fondo semitransparente para mejor legibilidad -->
             <h1 class="text-2xl font-semibold text-[#2045c2] inline-block bg-white bg-opacity-40 px-4 py-2 rounded">GESTIÓN ALMACÉN</h1>
+            
+            <!-- Botón para ver todos los materiales -->
+            <a href="{{ route('stock.view') }}" 
+               class="bg-[#2045c2] hover:bg-[#1a3aa3] text-white px-4 py-2 rounded-lg transition-colors duration-150 shadow-md"
+               title="Ver todos los materiales">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+                Ver Todos
+            </a>
         </div>
+
+        <!-- Mostrar mensaje de búsqueda si existe -->
+        @if(isset($search_term) && !empty($search_term))
+            <div class="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <span class="text-blue-800 font-medium">
+                        Resultados de búsqueda para: "{{ $search_term }}"
+                    </span>
+                </div>
+                @if(isset($mensaje))
+                    <p class="text-blue-700 mt-1 text-sm">{{ $mensaje }}</p>
+                @endif
+            </div>
+        @endif
+
         <!-- Búsqueda y Filtros -->
         <div class="mb-6 card bg-white rounded-lg shadow-sm border border-gray-200 p-4">
             <div class="flex flex-col md:flex-row gap-4">
                 <!-- Búsqueda - Campo de texto con botón para buscar materiales -->
                 <div class="flex-1">
-                    <form action="#" method="GET">
+                    <form action="{{ route('materiales.buscar') }}" method="GET" id="searchForm">
                         <!-- Formulario de búsqueda con icono integrado -->
                         <div class="relative flex">
                             <input
                                 type="text"
                                 id="searchInput"
-                                name="busqueda"
+                                name="name"
+                                value="{{ $search_term ?? '' }}"
                                 placeholder="Buscar por código o nombre..."
                                 class="w-full h-10 pl-10 pr-4 rounded-l-lg border border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50"
                                 title="Ingrese el código o nombre del material que desea buscar"
+                                required
                             >
                             <!-- Icono de lupa para la búsqueda -->
                             <svg
@@ -34,10 +64,17 @@
                             <!-- Botón de búsqueda -->
                             <button
                                 type="submit"
-                                class="h-10 px-4 bg-[#2045c2] text-white rounded-r-lg hover:bg-[#1a3aa3] shadow-md"
+                                id="searchButton"
+                                class="h-10 px-4 bg-[#2045c2] text-white rounded-r-lg hover:bg-[#1a3aa3] shadow-md transition-colors duration-150 flex items-center"
                                 title="Iniciar búsqueda con los criterios ingresados"
                             >
-                                Buscar
+                                <span id="searchButtonText">Buscar</span>
+                                <div id="searchSpinner" class="hidden ml-2">
+                                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
                             </button>
                         </div>
                     </form>
@@ -62,7 +99,22 @@
         <!-- Materiales con ubicación - Sección principal que muestra el inventario ubicado -->
         <div>
             <!-- Título de la sección con color azul corporativo -->
-            <h2 class="text-lg font-semibold text-[#2045c2] inline-block bg-white bg-opacity-40 px-4 py-2 rounded mb-4">INVENTARIO</h2>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-[#2045c2] inline-block bg-white bg-opacity-40 px-4 py-2 rounded">
+                    @if(isset($search_term) && !empty($search_term))
+                        RESULTADOS DE BÚSQUEDA
+                    @else
+                        INVENTARIO
+                    @endif
+                </h2>
+                
+                @if(isset($materiales) && count($materiales) > 0)
+                    <span class="text-sm text-gray-600 bg-white bg-opacity-40 px-3 py-1 rounded">
+                        {{ count($materiales) }} material(es) encontrado(s)
+                    </span>
+                @endif
+            </div>
+            
             <div class="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div class="overflow-x-auto">
                     <!-- Tabla de materiales con ubicación -->
@@ -85,10 +137,26 @@
                             @if(isset($materiales) && count($materiales) > 0)
                                 @foreach ($materiales as $material)
                                 <!-- Fila de material real -->
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $material['name'] ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['description'] ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['cantidad'] ?? 0 }}</td>
+                                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        @if(isset($search_term) && !empty($search_term))
+                                            {!! str_ireplace($search_term, '<mark class="bg-yellow-200 px-1 rounded">' . $search_term . '</mark>', $material['name'] ?? 'N/A') !!}
+                                        @else
+                                            {{ $material['name'] ?? 'N/A' }}
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if(isset($search_term) && !empty($search_term))
+                                            {!! str_ireplace($search_term, '<mark class="bg-yellow-200 px-1 rounded">' . $search_term . '</mark>', $material['description'] ?? 'N/A') !!}
+                                        @else
+                                            {{ $material['description'] ?? 'N/A' }}
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                            {{ $material['cantidad'] ?? 0 }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['ubicacion'] ?? 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['almacen']['name'] ?? 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['estante']['name'] ?? 'N/A' }}</td>
@@ -116,9 +184,29 @@
                                 <tr>
                                     <td colspan="8" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                         @if(isset($error))
-                                            <div class="text-red-600">{{ $error }}</div>
+                                            <div class="text-red-600 flex items-center justify-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                {{ $error }}
+                                            </div>
+                                        @elseif(isset($search_term) && !empty($search_term))
+                                            <div class="text-gray-500 flex flex-col items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                </svg>
+                                                <p class="text-lg font-medium">No se encontraron materiales</p>
+                                                <p class="text-sm">No hay materiales que coincidan con "{{ $search_term }}"</p>
+                                                <a href="{{ route('stock.view') }}" class="mt-2 text-[#2045c2] hover:underline">Ver todos los materiales</a>
+                                            </div>
                                         @else
-                                            No hay materiales registrados.
+                                            <div class="text-gray-500 flex flex-col items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                                </svg>
+                                                <p class="text-lg font-medium">No hay materiales registrados</p>
+                                                <p class="text-sm">Aún no se han registrado materiales en el sistema</p>
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>
@@ -166,7 +254,68 @@
                     this.classList.remove('bg-gray-50');
                 });
             });
+
+            // Configuración del formulario de búsqueda
+            const searchForm = document.getElementById('searchForm');
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const searchButtonText = document.getElementById('searchButtonText');
+            const searchSpinner = document.getElementById('searchSpinner');
+
+            // Enfocar automáticamente el campo de búsqueda si está vacío
+            if (searchInput && !searchInput.value.trim()) {
+                searchInput.focus();
+            }
+
+            // Manejar el envío del formulario de búsqueda
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    const searchTerm = searchInput.value.trim();
+                    
+                    if (!searchTerm) {
+                        e.preventDefault();
+                        alert('Por favor ingrese un término de búsqueda');
+                        searchInput.focus();
+                        return false;
+                    }
+
+                    // Mostrar spinner durante la búsqueda
+                    searchButton.disabled = true;
+                    searchButtonText.textContent = 'Buscando...';
+                    searchSpinner.classList.remove('hidden');
+                });
+            }
+
+            // Permitir búsqueda al presionar Enter en el campo de búsqueda
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchForm.dispatchEvent(new Event('submit'));
+                    }
+                });
+
+                // Limpiar búsqueda con Escape
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        searchInput.value = '';
+                        searchInput.focus();
+                    }
+                });
+            }
+
+            // Botón para limpiar búsqueda (si hay término de búsqueda activo)
+            @if(isset($search_term) && !empty($search_term))
+                const clearSearchButton = document.createElement('button');
+                clearSearchButton.innerHTML = '✕ Limpiar';
+                clearSearchButton.className = 'ml-2 px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded transition-colors duration-150';
+                clearSearchButton.onclick = function() {
+                    window.location.href = '{{ route("stock.view") }}';
+                };
+                searchButton.parentNode.appendChild(clearSearchButton);
+            @endif
         });
+
         // Alias para mantener compatibilidad con el código anterior
         function openHistoryModal(code) {
             openMovementsModal(code);

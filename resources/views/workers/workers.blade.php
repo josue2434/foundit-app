@@ -69,8 +69,13 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user['email'] ?? 'N/A'}}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user['tipo'] ?? 'N/A'}}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        Activo
+                                    @php
+                                        $estado = $user['estado'] ?? $user['activo'] ?? 'activo';
+                                        $isActive = (strtolower($estado) === 'activo' || $estado === true || $estado === 1);
+                                    @endphp
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        {{ $isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $isActive ? 'Activo' : 'Inactivo' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
