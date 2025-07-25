@@ -112,29 +112,21 @@
                         >
                         <div id="password-match-error" class="mt-1 text-sm text-red-600 hidden">Las contraseñas no coinciden</div>
                     </div>
-                   
 
-
-
-
-                    <!-- Permisos de Administrador -->
+                    <!-- Permisos de Usuario -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
-                            Permisos de Usuario
+                            Tipo de Usuario
                         </label>
                         <select 
-                            name="rol"
+                            name="tipo"
                             class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white"
-                            name="tipo" 
-                            class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white" 
                             title="Seleccione el nivel de permisos que tendrá el trabajador"
                             required
                         >
-                            <option value="oper"  title="Acceso limitado a funciones operativas">Operador</option>
-                            <option value="adm"  title="Acceso completo a todas las funciones del sistema">Administrador</option>
                             <option value="">Seleccione un tipo de usuario</option>
                             <option value="operador" {{ old('tipo') == 'operador' ? 'selected' : '' }} title="Acceso limitado a funciones operativas">Operador</option>
                             <option value="admin" {{ old('tipo') == 'admin' ? 'selected' : '' }} title="Acceso completo a todas las funciones del sistema">Administrador</option>
@@ -143,28 +135,8 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-                    <!-- Estatus -->
-                {{--     <div>
-                        <label class="block text-base font-medium text-gray-700 mb-2">
-                            Estatus
-                        </label>
-                        <div class="flex items-center space-x-4">
-                            <label class="inline-flex items-center" title="El trabajador podrá acceder al sistema">
-                                <input type="radio" name="activo" value="1" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" >
-                                <span class="ml-2 text-gray-700">Activo</span>
-                            </label>
-                            <label class="inline-flex items-center" title="El trabajador no podrá acceder al sistema">
-                                <input type="radio" name="activo" value="0" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" >
-                                <span class="ml-2 text-gray-700">Inactivo</span>
-                            </label>
-                        </div>
-                    </div>
-                    </div> --}}
-                </div>
 
-
-
- <!-- Almacén Asignado -->
+                    <!-- Almacén Asignado -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -179,15 +151,16 @@
                             title="Seleccione el almacén donde trabajará el empleado"
                         >
                             <option value="">Seleccione almacén</option>
-                            <option value="JW1"  title="Almacén principal">JW1 - Almacén Principal</option>
-                            <option value="JW2"  title="Almacén secundario">JW2 - Almacén Secundario</option>
-                            <option value="JW3"  title="Almacén de materiales especiales">JW3 - Materiales Especiales</option>
-                            <option value="JW4"  title="Almacén de reserva">JW4 - Almacén de Reserva</option>
+                            <option value="JW1" {{ old('almacen') == 'JW1' ? 'selected' : '' }} title="Almacén principal">JW1 - Almacén Principal</option>
+                            <option value="JW2" {{ old('almacen') == 'JW2' ? 'selected' : '' }} title="Almacén secundario">JW2 - Almacén Secundario</option>
+                            <option value="JW3" {{ old('almacen') == 'JW3' ? 'selected' : '' }} title="Almacén de materiales especiales">JW3 - Materiales Especiales</option>
+                            <option value="JW4" {{ old('almacen') == 'JW4' ? 'selected' : '' }} title="Almacén de reserva">JW4 - Almacén de Reserva</option>
                         </select>
                         @error('almacen')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
                     <!-- Estante Asignado -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -203,19 +176,16 @@
                             title="Seleccione el estante específico donde trabajará el empleado"
                         >
                             <option value="">Seleccione estante</option>
-                            <option value="E1" title="Estante 1 - Zona A">E1 - Zona A</option>
-                            <option value="E2" title="Estante 2 - Zona B">E2 - Zona B</option>
-                            <option value="E3" title="Estante 3 - Zona C">E3 - Zona C</option>
-                            <option value="E4" title="Estante 4 - Zona D">E4 - Zona D</option>
-                            <option value="E5"title="Estante 5 - Zona E">E5 - Zona E</option>
+                            <option value="E1" {{ old('estante') == 'E1' ? 'selected' : '' }} title="Estante 1 - Zona A">E1 - Zona A</option>
+                            <option value="E2" {{ old('estante') == 'E2' ? 'selected' : '' }} title="Estante 2 - Zona B">E2 - Zona B</option>
+                            <option value="E3" {{ old('estante') == 'E3' ? 'selected' : '' }} title="Estante 3 - Zona C">E3 - Zona C</option>
+                            <option value="E4" {{ old('estante') == 'E4' ? 'selected' : '' }} title="Estante 4 - Zona D">E4 - Zona D</option>
+                            <option value="E5" {{ old('estante') == 'E5' ? 'selected' : '' }} title="Estante 5 - Zona E">E5 - Zona E</option>
                         </select>
                         @error('estante')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-
-
-
                 </div>
                 <!-- Botones de Acción -->
                 <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
@@ -281,6 +251,8 @@
             const apellido = document.querySelector('input[name="apellido"]');
             const email = document.querySelector('input[name="email"]');
             const tipo = document.querySelector('select[name="tipo"]');
+            const almacen = document.querySelector('select[name="almacen"]');
+            const estante = document.querySelector('select[name="estante"]');
             
             // Función para validar coincidencia de contraseñas
             function validatePasswordMatch() {
@@ -304,7 +276,7 @@
             
             // Función para validar todos los campos requeridos
             function validateRequiredFields() {
-                const requiredFields = [name, apellido, email, password, confirmPassword, tipo];
+                const requiredFields = [name, apellido, email, password, confirmPassword, tipo, almacen, estante];
                 let isValid = true;
                 
                 requiredFields.forEach(field => {
@@ -333,7 +305,7 @@
             });
             
             // Event listeners para campos requeridos
-            [name, apellido, email, tipo].forEach(field => {
+            [name, apellido, email, tipo, almacen, estante].forEach(field => {
                 field.addEventListener('input', updateSubmitButton);
                 field.addEventListener('change', updateSubmitButton);
             });
@@ -382,9 +354,6 @@
                 `;
                 submitBtn.disabled = true;
             });
-        });
-    </script>
-</x-app-layout>
             
             // Mejorar la experiencia visual de los campos
             const inputs = document.querySelectorAll('input, select');
