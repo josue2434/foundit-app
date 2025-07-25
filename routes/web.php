@@ -43,6 +43,9 @@ Route::middleware(['session.auth'])->group(function () {
     })->name('stock.view'); */
     Route::get('/stock-view',[MaterialesController::class, 'index'])->name('stock.view'); 
     Route::get('/view-stock', [MaterialesController::class, 'gestionEmbarques'])->name('view-stock'); // Alias para compatibilidad con el nombre anterior en la barra lateral
+    
+    // Búsqueda de materiales
+    Route::get('/materiales/buscar', [MaterialesController::class, 'buscarMaterialesPorNombre'])->name('materiales.buscar');
 
     // Recibo/Entrada
     Route::get('/gestion-embarques', function () {
