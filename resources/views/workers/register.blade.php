@@ -151,17 +151,49 @@
                             title="Seleccione el almacén donde trabajará el empleado"
                         >
                             <option value="">Seleccione almacén</option>
-                            <option value="JW1" {{ old('almacen') == 'JW1' ? 'selected' : '' }} title="Almacén principal">JW1 - Almacén Principal</option>
-                            <option value="JW2" {{ old('almacen') == 'JW2' ? 'selected' : '' }} title="Almacén secundario">JW2 - Almacén Secundario</option>
-                            <option value="JW3" {{ old('almacen') == 'JW3' ? 'selected' : '' }} title="Almacén de materiales especiales">JW3 - Materiales Especiales</option>
-                            <option value="JW4" {{ old('almacen') == 'JW4' ? 'selected' : '' }} title="Almacén de reserva">JW4 - Almacén de Reserva</option>
+                            @if(isset($almacenes) && is_array($almacenes) && count($almacenes) > 0)
+                                @foreach($almacenes as $almacen)
+                                    @php
+                                        // Manejar diferentes formatos de ID (codigo, id, _id)
+                                        $almacenId = $almacen['codigo'] ?? $almacen['id'] ?? $almacen['_id'] ?? null;
+                                        $almacenNombre = $almacen['nombre'] ?? $almacen['descripcion'] ?? $almacen['name'] ?? 'Sin nombre';
+                                        $almacenDescripcion = $almacen['descripcion'] ?? $almacen['nombre'] ?? $almacen['name'] ?? 'Almacén';
+                                    @endphp
+                                    @if($almacenId)
+                                        <option value="{{ $almacenId }}" 
+                                                {{ old('almacen') == $almacenId ? 'selected' : '' }}
+                                                title="{{ $almacenDescripcion }}">
+                                            {{-- {{ $almacenId }} --}} - {{ $almacenNombre }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            @else
+                                @php
+                                    // Configuración de almacenes por defecto si no se pasan desde el controlador
+                                    $almacenesDefault = [
+                                        ['codigo' => 'JW1', 'nombre' => 'Almacén Principal', 'descripcion' => 'Almacén principal'],
+                                        ['codigo' => 'JW2', 'nombre' => 'Almacén Secundario', 'descripcion' => 'Almacén secundario'],
+                                        ['codigo' => 'JW3', 'nombre' => 'Almacén Terciario', 'descripcion' => 'Almacén terciario'],
+                                        ['codigo' => 'JW4', 'nombre' => 'Almacén Cuaternario', 'descripcion' => 'Almacén cuaternario'],
+                                        ['codigo' => 'JW5', 'nombre' => 'Almacén Norte', 'descripcion' => 'Almacén zona norte'],
+                                        ['codigo' => 'JW6', 'nombre' => 'Almacén Sur', 'descripcion' => 'Almacén zona sur']
+                                    ];
+                                @endphp
+                                @foreach($almacenesDefault as $almacen)
+                                    <option value="{{ $almacen['codigo'] }}" 
+                                            {{ old('almacen') == $almacen['codigo'] ? 'selected' : '' }}
+                                            title="{{ $almacen['descripcion'] }}">
+                                        {{ $almacen['codigo'] }} - {{ $almacen['nombre'] }}
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
                         @error('almacen')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Estante Asignado -->
+                   {{--  <!-- Estante Asignado -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -185,8 +217,8 @@
                         @error('estante')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
-                    </div>
-                </div>
+                    </div> 
+                </div> --}}
                 <!-- Botones de Acción -->
                 <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
                     <a

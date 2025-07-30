@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Almacen\AlmacenesController;
 use App\Http\Controllers\Almacen\MaterialesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Users\createUserController;
@@ -104,18 +105,22 @@ Route::middleware(['session.auth'])->group(function () {
     Route::get('/view-workers', [getUsersController::class, 'index'])->name('view_workers');
 
     // Formularios de gestión de trabajadores
-    Route::get('/register-workers', function () {
+    /* Route::get('/register-workers', function () {
         return view('workers.register');
     })->name('register_workers');
+ */
+    //ruta para mostrar en el formulario los almacenes y crear un nuevo trabajador
+    Route::get('/register-workers', [AlmacenesController::class, 'index'])->name('getAlmacenes');
 
-    Route::get('/edit-workers', function () {
-        return view('workers.edit_workers');
-    })->name('edit_workers');
+    Route::get('/edit-workers/{id}', [createUserController::class, 'edit'])->name('edit_workers');
 
     // ===== RUTAS DE USUARIO =====
     Route::get('/user-profile', function () {
         return redirect()->route('profile.edit');
     })->name('user.profile');
+
+    // ===== RUTAS DELETE USUARIO =====
+    Route::delete('/delete-user/{id}', [createUserController::class, 'destroy'])->name('deleteUser'); // Controller para eliminar al usuario
 
     // ===== RUTAS DE ACCIONES (POST/PUT) - General =====
     Route::post('/register-user', function () {
@@ -124,9 +129,7 @@ Route::middleware(['session.auth'])->group(function () {
 
     Route::post('/register-user',[createUserController::class, 'store'])->name('registerUser'); //controller para registrar al usuario
 
-    Route::put('/update-user/{id}', function ($id) {
-        return redirect()->route('workers')->with('mensaje', 'Trabajador actualizado exitosamente');
-    })->name('updateUser');
+    Route::put('/update-user/{id}', [createUserController::class, 'update'])->name('updateUser');
 });
 
 // ===== RUTAS DE PERFIL DE BREEZE =====
