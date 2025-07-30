@@ -2,15 +2,53 @@
     <div class="min-h-screen flex items-center justify-center p-6">
         <!-- Formulario de Edición de Empleado -->
         <div class="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 relative z-10">
-            <form action="#" method="POST" class="p-8">
+            @php
+                $userId = $user['_id'] ?? $user['id'] ?? null;
+            @endphp
+            
+            @if($userId)
+                <form action="{{ route('updateUser', $userId) }}" method="POST" class="p-8">
+            @else
+                <div class="p-8 text-center">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h3 class="text-red-800 font-medium">Error: No se puede editar el usuario</h3>
+                        <p class="text-red-600 mt-2">No se encontró un ID válido para este usuario.</p>
+                        <a href="{{ route('workers') }}" class="mt-4 inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                            Volver a la lista
+                        </a>
+                    </div>
+                </div>
+            @endif
+            
+            @if($userId)
                 @csrf
                 @method('PUT')
+                
                 <div class="space-y-6">
                     <!-- Header -->
                     <div class="text-center">
                         <h1 class="text-2xl font-semibold text-[#2045c2]">EDITAR TRABAJADOR</h1>
                         <p class="text-gray-600 mt-1">Modifique los detalles del trabajador</p>
                     </div>
+                    
+                    <!-- Mostrar errores de validación -->
+                    @if ($errors->any())
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <div class="flex">
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">Hay errores en el formulario:</h3>
+                                    <div class="mt-2 text-sm text-red-700">
+                                        <ul class="list-disc pl-5 space-y-1">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
                     <!-- Nombre -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -19,13 +57,30 @@
                         <input 
                             type="text"
                             name="name"
-                            value="{{ old('name', 'Juan Pérez') }}"
+                            value="{{ old('name', $user['name'] ?? '') }}"
                             placeholder="Ingrese el nombre completo"
                             class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]"
                             required
                             title="Modifique el nombre completo del trabajador"
                         >
                     </div>
+                    
+                    <!-- Apellido -->
+                    <div>
+                        <label class="block text-base font-medium text-gray-700 mb-2">
+                            Apellido
+                        </label>
+                        <input 
+                            type="text"
+                            name="apellido"
+                            value="{{ old('apellido', $user['apellido'] ?? '') }}"
+                            placeholder="Ingrese el apellido completo"
+                            class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]"
+                            required
+                            title="Modifique el apellido completo del trabajador"
+                        >
+                    </div>
+                    
                     <!-- Email -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
@@ -34,7 +89,7 @@
                         <input 
                             type="email"
                             name="email"
-                            value="{{ old('email', 'juan.perez@example.com') }}"
+                            value="{{ old('email', $user['email'] ?? '') }}"
                             placeholder="Ingrese el correo electrónico"
                             class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]"
                             required
@@ -76,35 +131,36 @@
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             Permisos de Usuario
                         </label>
-                        <select name="rol" class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]" title="Modifique el nivel de permisos del trabajador">
-                            <option value="adm" title="Acceso completo a todas las funciones del sistema">Administrador</option>
-                            <option value="oper"  title="Acceso limitado a funciones operativas">Operador</option>
+                        <select name="tipo" class="w-full h-12 text-lg rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]" title="Modifique el nivel de permisos del trabajador" required>
+                            <option value="">Seleccione tipo de usuario</option>
+                            <option value="admin" {{ old('tipo', $user['tipo'] ?? '') == 'admin' ? 'selected' : '' }} title="Acceso completo a todas las funciones del sistema">Administrador</option>
+                            <option value="operador" {{ old('tipo', $user['tipo'] ?? '') == 'operador' ? 'selected' : '' }} title="Acceso limitado a funciones operativas">Operador</option>
                         </select>
                     </div>
+                    
                     <!-- Estatus -->
                     <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             Estatus
                         </label>
                         <div class="flex items-center space-x-4">
+                            @php
+                                $estado = old('estado', $user['estado'] ?? $user['activo'] ?? 'activo');
+                                $isActive = (strtolower($estado) === 'activo' || $estado === true || $estado === 1);
+                            @endphp
                             <label class="inline-flex items-center" title="El trabajador podrá acceder al sistema">
-                                <input type="radio" name="activo" value="1" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" >
+                                <input type="radio" name="estado" value="activo" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" {{ $isActive ? 'checked' : '' }}>
                                 <span class="ml-2 text-gray-700">Activo</span>
                             </label>
                             <label class="inline-flex items-center" title="El trabajador no podrá acceder al sistema">
-                                <input type="radio" name="activo" value="0" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" >
+                                <input type="radio" name="estado" value="inactivo" class="h-5 w-5 text-[#2045c2] focus:ring-[#2045c2]" {{ !$isActive ? 'checked' : '' }}>
                                 <span class="ml-2 text-gray-700">Inactivo</span>
                             </label>
                         </div>
                     </div>
 
-
-
-
-
-
-             <!-- Almacén Asignado -->
-                    <div>
+                    <!-- Almacén Asignado -->
+                    {{-- <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             Almacén Asignado
                         </label>
@@ -115,13 +171,15 @@
                             title="Seleccione el almacén donde trabajará el empleado"
                         >
                             <option value="">Seleccione almacén</option>
-                            <option value="JW1"  title="Almacén principal">JW1 - Almacén Principal</option>
-                            <option value="JW2"  title="Almacén secundario">JW2 - Almacén Secundario</option>
-                           
+                            <option value="JW1" {{ old('almacen', $user['almacen'] ?? '') == 'JW1' ? 'selected' : '' }} title="Almacén principal">JW1 - Almacén Principal</option>
+                            <option value="JW2" {{ old('almacen', $user['almacen'] ?? '') == 'JW2' ? 'selected' : '' }} title="Almacén secundario">JW2 - Almacén Secundario</option>
+                            <option value="JW3" {{ old('almacen', $user['almacen'] ?? '') == 'JW3' ? 'selected' : '' }} title="Almacén terciario">JW3 - Almacén Terciario</option>
+                            <option value="JW4" {{ old('almacen', $user['almacen'] ?? '') == 'JW4' ? 'selected' : '' }} title="Almacén cuaternario">JW4 - Almacén Cuaternario</option>
                         </select>
-                    </div>
+                    </div> --}}
+                    
                     <!-- Estante Asignado -->
-                    <div>
+                    {{-- <div>
                         <label class="block text-base font-medium text-gray-700 mb-2">
                             Estante Asignado
                         </label>
@@ -132,11 +190,13 @@
                             title="Seleccione el estante específico donde trabajará el empleado"
                         >
                             <option value="">Seleccione estante</option>
-                            <option value="E1"  title="Estante 1 - Zona A">E1 - Zona A</option>
-                            <option value="E2" title="Estante 2 - Zona B">E2 - Zona B</option>
-                            
+                            <option value="E1" {{ old('estante', $user['estante'] ?? '') == 'E1' ? 'selected' : '' }} title="Estante 1 - Zona A">E1 - Zona A</option>
+                            <option value="E2" {{ old('estante', $user['estante'] ?? '') == 'E2' ? 'selected' : '' }} title="Estante 2 - Zona B">E2 - Zona B</option>
+                            <option value="E3" {{ old('estante', $user['estante'] ?? '') == 'E3' ? 'selected' : '' }} title="Estante 3 - Zona C">E3 - Zona C</option>
+                            <option value="E4" {{ old('estante', $user['estante'] ?? '') == 'E4' ? 'selected' : '' }} title="Estante 4 - Zona D">E4 - Zona D</option>
+                            <option value="E5" {{ old('estante', $user['estante'] ?? '') == 'E5' ? 'selected' : '' }} title="Estante 5 - Zona E">E5 - Zona E</option>
                         </select>
-                    </div>
+                    </div> --}}
 
 
 
@@ -185,6 +245,7 @@
                         Actualizar
                     </button>
                 </div>
+            @endif
             </form>
         </div>
     </div>
