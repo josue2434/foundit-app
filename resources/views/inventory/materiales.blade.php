@@ -183,12 +183,13 @@
                             @else
                                 <tr>
                                     <td colspan="8" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                        @if(isset($error))
-                                            <div class="text-red-600 flex items-center justify-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        @if(isset($error) && str_contains($error, 'No se encontraron materiales'))
+                                            <div class="text-gray-500 flex flex-col items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                                 </svg>
-                                                {{ $error }}
+                                                <p class="text-lg font-medium">No hay materiales registrados</p>
+                                                <p class="text-sm">Aún no se han registrado materiales en el sistema</p>
                                             </div>
                                         @elseif(isset($search_term) && !empty($search_term))
                                             <div class="text-gray-500 flex flex-col items-center">
