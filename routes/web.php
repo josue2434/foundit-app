@@ -19,6 +19,41 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['session.auth'])->group(function () {
 
+
+// ===== RUTAS PARA ALMACENES (SOLO VISTAS - SIMPLIFICADAS) =====
+    // IMPORTANTE: Reemplaza completamente el bloque de rutas de 'almacenes' si ya existe.
+    Route::prefix('almacenes')->group(function () {
+        // 1. Ruta para la vista de creación (estática) - DEBE IR PRIMERO
+        Route::get('/crear', function () {
+            return view('almacen.crear-almacen');
+        })->name('almacenes.crear'); // Nombre de ruta: almacenes.crear
+
+        // 2. Ruta para la vista de índice (listado principal)
+        Route::get('/', function () {
+            return view('almacen.index-almacen');
+        })->name('almacenes.index'); // Nombre de ruta: almacenes.index
+        
+        // 3. Ruta para la vista de edición (con parámetro dinámico {id})
+        Route::get('/{id}/edit', function ($id) {
+            // Datos de ejemplo para que la vista se renderice sin funcionalidad de backend
+            $almacen = [
+                'id' => $id,
+                'nombre' => 'Almacén de Ejemplo (ID: ' . $id . ')',
+                'direccion' => 'Dirección de Ejemplo ' . $id,
+                'cantidad_estantes' => 10,
+            ];
+            return view('almacen.edit-almacen', ['almacen' => $almacen]);
+        })->name('almacenes.edit'); // Nombre de ruta: almacenes.edit
+    });
+
+
+
+
+
+
+
+
+
     //  RUTAS DE PRODUCTOS 
     Route::get('/critical-products', function () {
         return view('products.critical_products');
@@ -108,6 +143,10 @@ Route::middleware(['session.auth'])->group(function () {
     /* Route::get('/register-workers', function () {
         return view('workers.register');
     })->name('register_workers');
+
+
+
+    
  */
     //ruta para mostrar en el formulario los almacenes y crear un nuevo trabajador
     Route::get('/register-workers', [AlmacenesController::class, 'index'])->name('getAlmacenes');
