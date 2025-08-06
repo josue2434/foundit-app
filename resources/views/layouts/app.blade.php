@@ -122,19 +122,13 @@
                     </a>
 
                  <!-- Almacenes -->
-                    
-                    <a href="{{ route('almacenes.index') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('workers') ? 'bg-white text-[#2045c2]' : 'text-white hover:bg-white/10' }} transition-all duration-150">
+                    <a href="{{ route('getallAlmacenes') }}" class="flex items-center px-4 py-3 text-sm font-medium rounded-lg {{ request()->routeIs('workers') ? 'bg-white text-[#2045c2]' : 'text-white hover:bg-white/10' }} transition-all duration-150">
                          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2V10z" />
                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 22V12h6v10" />
                             </svg>
                         Almacenes
                     </a>
-
-
-
-
-                                                
 
                     <!-- Trabajadores -->
                     

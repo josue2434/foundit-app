@@ -34,16 +34,12 @@ class ExternalUserService
     public function registerUser(array $userData, ?string $token = null): array
     {
         try {
-            // Log de los datos que se van a enviar
-            Log::info('SERVICIO: Iniciando registro de usuario en API externa', [
-                'email' => $userData['email'] ?? 'No email',
-                'name' => $userData['name'] ?? 'No name',
-                'tipo' => $userData['tipo'] ?? 'No tipo',
-                'almacen' => $userData['almacen'] ?? 'No almacen',
-                'datos_completos' => $userData
-            ]);
-
-            $response = Http::timeout($this->timeout) // post a la API externa
+            /*
+            Aqui enviar los datos para el registro de estantes los datos ya se caputuraron
+            y se enviaron aqui ahora solo falta agrega la logica para mandar esos datos para el servicio 
+            de estantes queda pendiente la logica de los estantes
+             */
+            $response = Http::timeout($this->timeout) // post a la API externa de usuarios
                 ->withHeaders($this->getCommonHeaders())
                 ->post($this->baseUrl . '/users', [
                     'name' => $userData['name'],
@@ -55,41 +51,19 @@ class ExternalUserService
                     // 'estante' => $userData['estante'] ?? null, // Mantener comentado por ahora
                 ]);
 
-            // Log detallado de la respuesta
-            Log::info('SERVICIO: Respuesta de la API al crear usuario', [
-                'status_code' => $response->status(),
-                'response_body' => $response->body(),
-                'success' => $response->successful(),
-                'endpoint' => $this->baseUrl . '/users'
-            ]);
 
             if ($response->successful()) { //si la respuesta es exitosa
-                $userCreated = $response->json();
-                $userId = $userCreated['usuario']['_id'] ?? $userCreated['data']['_id'] ?? $userCreated['_id'] ?? null;
+                $userCreated = $response->json(); // Obtener los datos del usuario creado
+                $userId = $userCreated['usuario']['_id'] ?? $userCreated['data']['_id'] ?? $userCreated['_id'] ?? null; // Obtener el ID del usuario creado
                 
-                Log::info('Usuario registrado exitosamente en API externa', [
-                    'email' => $userData['email'],
-                    'user_id' => $userId,
-                    'response_keys' => array_keys($userCreated),
-                    'usuario_object' => $userCreated['usuario'] ?? 'No usuario object',
-                    'usuario_keys' => isset($userCreated['usuario']) ? array_keys($userCreated['usuario']) : 'No keys',
-                    'full_response' => $userCreated,
-                    'almacen_a_asignar' => $userData['almacen'] ?? 'No almacen'
-                ]);
+                
 
                 // Asignar almacén al usuario usando su ID (petición separada)
-                if ($userId && isset($userData['almacen']) && !empty($userData['almacen'])) {
-                    Log::info('ALMACEN: Iniciando asignación de almacén', [
-                        'user_id' => $userId,
-                        'almacen_codigo' => $userData['almacen'],
-                        'endpoint' => $this->baseUrl . '/almacenes/' . $userId,
-                        'datos_a_enviar' => [
-                            'name' => $userData['almacen'],
-                            'direccion' => 'Dirección por defecto'
-                        ]
-                    ]);
+                if ($userId && isset($userData['almacen']) && !empty($userData['almacen'])) { // Verifica que el ID del usuario y el almacén existan
+                    
 
-                    $almacenHeaders = $this->getCommonHeaders();
+                    $almacenHeaders = $this->getCommonHeaders(); // Obtener los headers comunes
+                    
                     if ($token) {
                         $almacenHeaders['Authorization'] = 'Bearer ' . $token;
                         Log::info('ALMACEN: Usando token de autorización para asignar almacén');
@@ -97,40 +71,53 @@ class ExternalUserService
                         Log::warning('ALMACEN: Sin token de autorización para asignar almacén');
                     }
 
-                    $almacenResponse = Http::timeout($this->timeout)
+                    $almacenResponse = Http::timeout($this->timeout) //put para asignar almacén al usuario
                         ->withHeaders($almacenHeaders)
                         ->put($this->baseUrl . '/almacenes/' . $userId, [
                             'name' => $userData['almacen'], // El código/nombre del almacén seleccionado
                             'direccion' => $userData['direccion'] // Puedes cambiar esto por una dirección real
                         ]);
                     
-                    Log::info('ALMACEN: Respuesta del endpoint almacenes', [
-                        'status_code' => $almacenResponse->status(),
-                        'response_body' => $almacenResponse->body(),
-                        'success' => $almacenResponse->successful(),
-                        'user_id' => $userId,
-                        'almacen' => $userData['almacen'],
-                        'headers_sent' => array_keys($almacenHeaders),
-                        'has_auth_header' => isset($almacenHeaders['Authorization']),
-                        'endpoint_used' => $this->baseUrl . '/almacenes/' . $userId
-                    ]);
-                    
-                    if (!$almacenResponse->successful()) {
-                        Log::warning('Error al asignar almacén al usuario', [
-                            'user_id' => $userId,
-                            'almacen' => $userData['almacen'],
-                            'status' => $almacenResponse->status(),
-                            'response' => $almacenResponse->body(),
-                            'endpoint_usado' => $this->baseUrl . '/almacenes/' . $userId
-                        ]);
-                    } else {
-                        Log::info('Almacén asignado exitosamente al usuario', [
-                            'user_id' => $userId,
-                            'almacen' => $userData['almacen'],
-                            'response_data' => $almacenResponse->json()
-                        ]);
+                
+                    if($almacenResponse->successful()){
+
+                        //obtener el id del almacen creado
+                        $almacenId = $almacenResponse->json('_id');
+                        //dd($almacenId);
+                        $estanteHeaders = $this->getCommonHeaders(); // Obtener los headers comunes de estantes
+
+                        if ($token) {
+                            $estanteHeaders['Authorization'] = 'Bearer ' . $token;
+                        }
+
+                        $estantesResponse = Http::timeout($this->timeout)
+                            ->withHeaders($estanteHeaders)
+                            ->post($this->baseUrl . '/estantes/' . $userId, [
+                                'nombre' => $userData['nombre'] ?? 'Sin nombre asignado',
+                                'nameDispositivo' => $userData['nameDispositivo'] ?? 'Dispositivo por defecto',
+                                'ip' => $userData['ip'] ?? '0.0.0.0', //ip por defecto
+                                'almacenId' => $almacenId
+                            ]);
+
+                        if($estantesResponse->successful()){
+                            Log::info('Estante creado y asignado exitosamente al usuario', [
+                                'user_id' => $userId,
+                                'estante' => $userData['nombre'] ?? 'Sin nombre asignado',
+                                'nameDispositivo' => $userData['nameDispositivo'] ?? 'Dispositivo por defecto',
+                                'ip' => $userData['ip'] ?? '0.0.0.0',
+                                'response_data' => $estantesResponse->json()
+                            ]);
+                        } else {
+                            Log::warning('Error al crear y asignar estante al usuario', [
+                                'user_id' => $userId,
+                                'status' => $estantesResponse->status(),
+                                'response' => $estantesResponse->body(),
+                                'endpoint_usado' => $this->baseUrl . '/estantes/' . $userId
+                            ]);
+                        }
                     }
                 } else {
+                    
                     if (!$userId) {
                         Log::warning('No se pudo obtener el ID del usuario creado para asignar almacén');
                     }
@@ -180,11 +167,7 @@ class ExternalUserService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Excepción al registrar usuario en API externa', [
-                'message' => $e->getMessage(),
-                'email' => $userData['email']
-            ]);
-
+        
             return [
                 'success' => false,
                 'error' => 'Error de conexión: ' . $e->getMessage(),
@@ -532,7 +515,6 @@ class ExternalUserService
     }
 
     //Service para obtener almacenes 
-
     public function getAlmacenes(?string $token = null): array
     {
         try {
@@ -555,12 +537,6 @@ class ExternalUserService
                 $responseData = $response->json();
                 $almacenes = $responseData['almacenes'] ?? []; // Extraer los almacenes del campo correcto
                 
-                Log::info('Almacenes obtenidos exitosamente de la API externa', [
-                    'total_from_api' => $responseData['total'] ?? 'N/A',
-                    'almacenes_count' => count($almacenes),
-                    'api_response_keys' => array_keys($responseData),
-                    'first_almacen_keys' => count($almacenes) > 0 ? array_keys($almacenes[0]) : 'No almacenes'
-                ]);
                 
                 return [
                     'success' => true,
@@ -580,9 +556,7 @@ class ExternalUserService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Excepción al obtener almacenes de la API externa', [
-                'message' => $e->getMessage()
-            ]);
+            
             return [
                 'success' => false,
                 'error' => 'Error de conexión: ' . $e->getMessage(),
@@ -590,6 +564,61 @@ class ExternalUserService
             ];
         }
 
-    }        
+    }    
+    
+    public function deleteAlmacenById(string $almacenId, ?string $token = null): array
+    {
+        try {
+            $headers = $this->getCommonHeaders();
+            
+            // Si se proporciona un token, agregarlo a los headers
+            if ($token) {
+                $headers['Authorization'] = 'Bearer ' . $token;
+                Log::info('Eliminando almacén con token de autorización', ['almacen_id' => $almacenId]);
+            } else {
+                Log::warning('Eliminando almacén sin token de autorización', ['almacen_id' => $almacenId]);
+            }
+
+            $response = Http::timeout($this->timeout)
+                ->withHeaders($headers)
+                ->delete($this->baseUrl . '/almacenes/id/' . $almacenId); // delete a la API externa
+
+            if ($response->successful()) {
+                Log::info('Almacén eliminado exitosamente de la API externa', [
+                    'almacen_id' => $almacenId
+                ]);
+                
+                return [
+                    'success' => true,
+                    'status_code' => $response->status(),
+                    'mensaje' => 'Almacén eliminado exitosamente.'
+                ];
+            }
+
+            Log::error('Error al eliminar almacén de la API externa', [
+                'status' => $response->status(),
+                'response' => $response->body(),
+                'almacen_id' => $almacenId
+            ]);
+
+            return [
+                'success' => false,
+                'error' => 'Error en la API externa: ' . $response->body(),
+                'status_code' => $response->status()
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Excepción al eliminar almacén de la API externa', [
+                'message' => $e->getMessage(),
+                'almacen_id' => $almacenId
+            ]);
+
+            return [
+                'success' => false,
+                'error' => 'Error de conexión: ' . $e->getMessage(),
+                'status_code' => 500
+            ];
+        }
+    }
 
 }

@@ -137,7 +137,7 @@ Route::middleware(['session.auth'])->group(function () {
 
     Route::get('/workers', [getUsersController::class, 'index'])->name('workers');
 
-    Route::get('/view-workers', [getUsersController::class, 'index'])->name('view_workers');
+    Route::get('/view-workers', [getUsersController::class, 'index'])->name('view_workers'); //ruta para consultar los trabajadores  
 
     // Formularios de gestión de trabajadores
     /* Route::get('/register-workers', function () {
@@ -149,7 +149,10 @@ Route::middleware(['session.auth'])->group(function () {
     
  */
     //ruta para mostrar en el formulario los almacenes y crear un nuevo trabajador
-    Route::get('/register-workers', [AlmacenesController::class, 'index'])->name('getAlmacenes');
+    Route::get('/register-workers', [AlmacenesController::class, 'showRegisterForm'])->name('getAlmacenes'); //ruta para obtener almacenes en el formulario de registro de trabajadores
+    Route::get('/register-almacen', [AlmacenesController::class, 'index'])->name('getallAlmacenes'); //ruta para obtener almacenes en el formulario de registro de trabajadores
+    Route::delete('/delete-warehouse/{id}', [AlmacenesController::class, 'detroyalmacen'])->name('deleteWarehouse'); //ruta para eliminar almacén
+    Route::post('/create-warehouse', [AlmacenesController::class, 'createAlmacen'])->name('createWarehouse'); //ruta para crear almacén
 
     Route::get('/edit-workers/{id}', [createUserController::class, 'edit'])->name('edit_workers');
 

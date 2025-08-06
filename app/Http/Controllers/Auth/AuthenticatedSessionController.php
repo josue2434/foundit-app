@@ -68,7 +68,7 @@ class AuthenticatedSessionController extends Controller
 
             // Guardar datos del usuario en la sesión (NO en base de datos)
             $request->session()->put('user', [
-                'id' => $nodeJsUser['_id'] ?? null,
+                'id' => $nodeJsUser['id'] ?? null,
                 'name' => $nodeJsUser['name'] ?? '',
                 'apellido' => $nodeJsUser['apellido'] ?? '',
                 'email' => $nodeJsUser['email'],

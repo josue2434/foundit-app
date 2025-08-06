@@ -3,7 +3,7 @@
         <!-- Formulario de Nuevo Almacén -->
         <div class="max-w-4xl w-full bg-white rounded-lg shadow-lg border border-gray-200 relative z-10">
             {{-- El action="#" y method="POST" son solo para la estructura visual del formulario, no hay funcionalidad de backend --}}
-            <form action="#" method="POST" class="p-8">
+            <form action="{{ route('createWarehouse') }}" method="POST" class="p-8">
                 @csrf
                 <div class="space-y-6">
                     <!-- Header -->
@@ -21,14 +21,14 @@
                         </label>
                         <input
                             type="text"
-                            name="nombre"
-                            value="{{ old('nombre') }}"
+                            name="name"
+                            value="{{ old('name') }}"
                             placeholder="Ingrese el nombre del almacén (ej. Almacén Principal)"
                             class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200"
                             required
                             title="Ingrese el nombre completo del almacén"
                         >
-                        @error('nombre')
+                        @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -62,18 +62,62 @@
                             </svg>
                             Cantidad de Estantes
                         </label>
-                        <select
-                            name="cantidad_estantes"
+                        <input
+                            type="number"
+                            name="nombre"
+                            min="1"
+                            max="20"
+                            value="{{ old('nombre') }}"
                             class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white"
                             required
-                            title="Seleccione la cantidad de estantes que tendrá este almacén"
+                            title="Ingrese la cantidad de estantes que tendrá este almacén (1 a 20)"
+                            placeholder="Ingrese la cantidad (1-20)"
                         >
-                            <option value="">Seleccione cantidad</option>
-                            @for ($i = 1; $i <= 20; $i++)
-                                <option value="{{ $i }}" {{ old('cantidad_estantes') == $i ? 'selected' : '' }}>{{ $i }} Estantes</option>
-                            @endfor
-                        </select>
                         @error('cantidad_estantes')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Nombre del Dispositivo -->
+                    <div>
+                        <label class="block text-base font-medium text-gray-700 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            Nombre del Dispositivo
+                        </label>
+                        <input
+                            type="text"
+                            name="nameDispositivo"
+                            value="{{ old('nameDispositivo') }}"
+                            class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white"
+                            required
+                            title="Ingrese el nombre del dispositivo (ej. Disp ESP32)"
+                            placeholder="Ejemplo: Disp ESP32"
+                        >
+                        @error('nameDispositivo')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- IP del Dispositivo -->
+                    <div>
+                        <label class="block text-base font-medium text-gray-700 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-[#2045c2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm-6 0c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2zm12 0c0-1.104.896-2 2-2s2 .896 2 2-.896 2-2 2-2-.896-2-2z" />
+                            </svg>
+                            IP del Dispositivo
+                        </label>
+                        <input
+                            type="text"
+                            name="ip"
+                            value="{{ old('ip') }}"
+                            class="w-full h-12 px-4 text-lg rounded-lg border border-gray-300 focus:border-[#2045c2] focus:ring-2 focus:ring-[#2045c2] focus:ring-opacity-20 transition-all duration-200 bg-white"
+                            required
+                            title="Ingrese la IP del dispositivo (ej. 192.168.45.1)"
+                            placeholder="Ejemplo: 192.168.45.1"
+                        >
+                        @error('ip')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

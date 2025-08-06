@@ -27,8 +27,8 @@ class createUserController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'apellido' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255', // Quitar unique:users porque validamos contra la API
-                'password' => 'required|string|min:6|confirmed', // Cambiar a min:6 para coincidir con frontend
+                'email' => 'required|string|email|max:255',
+                'password' => 'required|string|min:6|confirmed', 
                 'tipo' => 'required|string|in:admin,operador', // Validar que solo sean valores permitidos
                 // Comentado temporalmente - no se usan almacen y estante por ahora
                 'almacen' => 'required|string', // Validar almacenes permitidos
@@ -49,14 +49,21 @@ class createUserController extends Controller
 
             // Buscar el nombre y dirección del almacén por su ID
             $almacenes = $this->externalUserService->getAlmacenes($token);
+            //capturamos datos para el registro
             $almacenSeleccionado = collect($almacenes['data'] ?? [])->firstWhere('_id', $request->almacen);
             $nombreAlmacen = $almacenSeleccionado['name'] ?? $request->almacen; // fallback al ID si no se encuentra
             $direccionAlmacen = $almacenSeleccionado['direccion'] ?? 'Dirección por defecto';
-            Log::info('CONTROLADOR: Almacén seleccionado para registro', [
-                'almacen_id' => $request->almacen,
-                'nombre_almacen' => $nombreAlmacen,
-                'direccion_almacen' => $direccionAlmacen
-            ]);
+
+            //obtener los estantes del almacén seleccionado
+            $estantes = $almacenSeleccionado['estantes'] ?? []; 
+
+            //recorrer y acceder a los atributos de los estantes
+            foreach ($estantes as $estante) {
+                $nombreEstante = $estante['nombre'] ?? 'Estante sin nombre';
+                $nameDispositivo = $estante['nameDispositivo'] ?? 'Dispositivo sin nombre';
+                $ip = $estante['ip'] ?? 'IP no disponible';
+            
+            }
             
             $externalResultado = $this->externalUserService->registerUser([
                 'name' => $request->name,
@@ -67,17 +74,17 @@ class createUserController extends Controller
                 // Enviar el nombre y dirección reales del almacén
                 'almacen' => $nombreAlmacen,
                 'direccion' => $direccionAlmacen,
-                // 'estante' => $request->estante,
+                //enviar datos del estantes 
+                'nombre'=> $nombreEstante,
+                'nameDispositivo' => $nameDispositivo,
+                'ip' => $ip,
+                
             ], $token);
 
 
             // Verificar si el registro fue exitoso
             if ($externalResultado['success']) {
-                Log::info('CONTROLADOR: Usuario registrado exitosamente', [
-                    'user_data' => $externalResultado['data'] ?? 'No data',
-                    'email' => $request->email
-                ]);
-
+            
                 return redirect()->route('workers')->with('success', 'Usuario registrado exitosamente: ' . $request->name . ' ' . $request->apellido);
             } else {
                 Log::error('CONTROLADOR: Error en el registro del usuario', [
