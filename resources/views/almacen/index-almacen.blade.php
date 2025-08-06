@@ -46,30 +46,28 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        {{-- Ejemplo de datos estáticos para almacenes --}}
-                        @php
-                            $almacenes = [
-                                ['id' => 1, 'nombre' => 'Almacén Principal (JW1)', 'direccion' => '', 'estantes' => 10, 'trabajadores' => 5],
-                                ['id' => 2, 'nombre' => 'Almacén Secundario (JW2)', 'direccion' => '', 'estantes' => 8, 'trabajadores' => 3],
-                                ['id' => 3, 'nombre' => 'Almacén de Materiales Especiales (JW3)', 'direccion' => '', 'estantes' => 5, 'trabajadores' => 2],
-                            ];
-                        @endphp
+
 
                         @if(isset($almacenes) && count($almacenes) > 0)
                             @foreach ($almacenes as $almacen)
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $almacen['nombre'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $almacen['name'] }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $almacen['direccion'] }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $almacen['estantes'] }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $almacen['trabajadores'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ is_array($almacen['estantes']) ? count($almacen['estantes']) : $almacen['estantes'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @php
+                                            $nombreAlmacenKey = strtolower(trim($almacen['name']));
+                                        @endphp
+                                        {{ isset($trabajadoresPorAlmacen[$nombreAlmacenKey]) ? count($trabajadoresPorAlmacen[$nombreAlmacenKey]) : 0 }}
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                        <a href="{{ route('almacenes.edit', ['id' => $almacen['id']]) }}" class="inline-block text-[#2045c2] hover:text-[#1a3aa3] transition-colors duration-150" title="Editar información del almacén">
+                                        <a href="{{-- {{ route('almacenes.edit', ['id' => $almacen['id']]) }} --}}" class="inline-block text-[#2045c2] hover:text-[#1a3aa3] transition-colors duration-150" title="Editar información del almacén">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </a>
                                          <!-- Estos formularios son solo para visualización, no tienen funcionalidad de backend  -->
-                                        <form action="#" method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro que desea eliminar este almacén? Esto también podría afectar a los trabajadores y materiales asignados.')">
+                                        <form action="{{ route('deleteWarehouse', ['id' => $almacen['_id']]) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Está seguro que desea eliminar este almacén? Esto también podría afectar a los trabajadores y materiales asignados.')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-block text-red-600 hover:text-red-900 transition-colors duration-150" title="Eliminar almacén del sistema">

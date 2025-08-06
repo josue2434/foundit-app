@@ -10,13 +10,13 @@
             <div class="flex flex-col md:flex-row gap-4">
                 <!-- Búsqueda - Campo de texto con botón para buscar materiales -->
                 <div class="flex-1">
-                    <form action="#" method="GET">
+                    <form action="{{ route('materiales.buscar') }}" method="GET">
                         <!-- Formulario de búsqueda con icono integrado -->
                         <div class="relative flex">
                             <input
                                 type="text"
                                 id="searchInput"
-                                name="busqueda"
+                                name="name"
                                 placeholder="Buscar por código o nombre..."
                                 class="w-full h-10 pl-10 pr-4 rounded-l-lg border border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50"
                                 title="Ingrese el código o nombre del material que desea buscar"
