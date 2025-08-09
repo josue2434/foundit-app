@@ -128,7 +128,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Ubicación física">Ubicación</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Nombre del almacén">Almacén</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Estante donde se encuentra">Estante</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Último movimiento">Movimiento</th>
+                                {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Último movimiento">Movimiento</th> --}}
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" title="Opciones disponibles">Acciones</th>
                             </tr>
                         </thead>
@@ -140,16 +140,16 @@
                                 <tr class="hover:bg-gray-50 transition-colors duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         @if(isset($search_term) && !empty($search_term))
-                                            {!! str_ireplace($search_term, '<mark class="bg-yellow-200 px-1 rounded">' . $search_term . '</mark>', $material['name'] ?? 'N/A') !!}
+                                            {!! str_ireplace($search_term, '<mark class="bg-yellow-200 px-1 rounded">' . $search_term . '</mark>', $material['material'] ?? 'N/A') !!}
                                         @else
-                                            {{ $material['name'] ?? 'N/A' }}
+                                            {{ $material['material'] ?? 'N/A' }}
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         @if(isset($search_term) && !empty($search_term))
-                                            {!! str_ireplace($search_term, '<mark class="bg-yellow-200 px-1 rounded">' . $search_term . '</mark>', $material['description'] ?? 'N/A') !!}
+                                            {!! str_ireplace($search_term, '<mark class="bg-yellow-200 px-1 rounded">' . $search_term . '</mark>', $material['descripcion'] ?? 'N/A') !!}
                                         @else
-                                            {{ $material['description'] ?? 'N/A' }}
+                                            {{ $material['descripcion'] ?? 'N/A' }}
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -158,18 +158,18 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['ubicacion'] ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['almacen']['name'] ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['estante']['name'] ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        @if(isset($material['movimientos']) && count($material['movimientos']) > 0)
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['almacen'] ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $material['estante'] ?? 'N/A' }}</td>
+                                    {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if(isset($material['movimiento']) && count($material['movimiento']) > 0)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                {{ $material['movimientos'][0] === 'entrada' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                {{ ucfirst($material['movimientos'][0]) }}
+                                                {{ $material['movimiento'][0] === 'entrada' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                {{ ucfirst($material['movimiento'][0]) }}
                                             </span>
                                         @else
                                             <span class="text-gray-400">N/A</span>
                                         @endif
-                                    </td>
+                                    </td> --}}
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                         <!-- Botón para ver historial -->
                                         <button onclick="openHistoryModal('{{ $material['_id'] ?? 'N/A' }}')" class="text-[#2045c2] hover:text-[#1a3aa3] transition-colors duration-150" title="Ver historial de movimientos del material">
