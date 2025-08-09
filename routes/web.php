@@ -83,6 +83,9 @@ Route::middleware(['session.auth'])->group(function () {
     // Búsqueda de materiales
     Route::get('/materiales/buscar', [MaterialesController::class, 'buscarMaterialesPorNombre'])->name('materiales.buscar');
 
+    // Historial de movimientos de un material (JSON)
+    Route::get('/materiales/{id}/movimientos', [MaterialesController::class, 'historialMovimientos'])->name('materiales.movimientos');
+
     // Recibo/Entrada
     Route::get('/gestion-embarques', function () {
         return view('inventory.gestion_embarques');
