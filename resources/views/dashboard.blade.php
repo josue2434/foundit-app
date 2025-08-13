@@ -42,12 +42,12 @@
         </style>
         
         <div class="container">
-            <div class="box">
+            {{-- <div class="box">
                 <h2>Consulta de Ubicación</h2>
                 <input type='number' id='celda' min='0' max='11' value="0">
                 <button onclick='controlLed("on")'>Buscar</button>
                 <button onclick='controlLed("off")'>Limpiar</button>
-            </div>
+            </div> --}}
 
             <div class="box bg-blue-50 shadow-md flex flex-col items-center">
                 <h2 class="text-lg font-semibold text-blue-700 flex items-center gap-2 mb-2">

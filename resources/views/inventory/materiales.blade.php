@@ -45,7 +45,7 @@
                                 type="text"
                                 id="searchInput"
                                 name="name"
-                                value="{{ $search_term ?? '' }}"
+                                value="{{ request('name', $search_term ?? '') }}"
                                 placeholder="Buscar por código o nombre..."
                                 class="w-full h-10 pl-10 pr-4 rounded-l-lg border border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50"
                                 title="Ingrese el código o nombre del material que desea buscar"
@@ -82,17 +82,24 @@
                 <!-- Filtros - Selectores para filtrar por diferentes criterios -->
                 <div class="flex flex-wrap gap-4">
                     <!-- Selector de almacenes -->
-                    <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar materiales por almacén">
-                        <option value="">Todos los almacenes</option>
-                        <option value="almacen">Almacén</option>
-                        <option value="homeoffice">Almacen de HomeOffice</option>
-                    </select>
-                    <!-- Selector de movimientos -->
-                    <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar por tipo de movimiento">
-                        <option value="">Todos los movimientos</option>
-                        <option value="entrada">Entrada</option>
-                        <option value="salida">Salida</option>
-                    </select>
+                    <form method="GET" action="{{ route('stock.view') }}" id="filtersForm" class="flex gap-4">
+                        <input type="hidden" name="name" value="{{ request('name', $search_term ?? '') }}" />
+                        <select name="almacen" class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar materiales por almacén" onchange="document.getElementById('filtersForm').submit()">
+                            <option value="" {{ request('almacen','')==='' ? 'selected' : '' }}>Todos los almacenes</option>
+                            @php($currentWarehouse = request('almacen',''))
+                            @if(isset($warehouses) && is_array($warehouses) && count($warehouses) > 0)
+                                @foreach($warehouses as $wh)
+                                    <option value="{{ $wh }}" {{ $currentWarehouse === $wh ? 'selected' : '' }}>{{ $wh }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <!-- Selector de movimientos -->
+                        <select name="movement" class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar por tipo de movimiento" onchange="document.getElementById('filtersForm').submit()">
+                            <option value="" {{ request('movement','')==='' ? 'selected' : '' }}>Todos los movimientos</option>
+                            <option value="entrada" {{ request('movement')==='entrada' ? 'selected' : '' }}>Entrada</option>
+                            <option value="salida" {{ request('movement')==='salida' ? 'selected' : '' }}>Salida</option>
+                        </select>
+                    </form>
                 </div>
             </div>
         </div>
