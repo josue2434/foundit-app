@@ -77,7 +77,7 @@ Route::middleware(['session.auth'])->group(function () {
     /* Route::get('/stock-view', function () {
         return view('inventory.stock_view');
     })->name('stock.view'); */
-    Route::get('/stock-view',[MaterialesController::class, 'index'])->name('stock.view'); 
+    Route::get('/stock-view',[MaterialesController::class, 'getAllmateriales'])->name('stock.view'); 
     Route::get('/view-stock', [MaterialesController::class, 'gestionEmbarques'])->name('view-stock'); // Alias para compatibilidad con el nombre anterior en la barra lateral
     
     // Búsqueda de materiales
@@ -134,9 +134,12 @@ Route::middleware(['session.auth'])->group(function () {
     })->name('Exist_Material');
 
     // ===== RUTAS DE ADMIN =====
-    Route::get('/reporte', function () {
+  /*   Route::get('/reporte', function () {
         return view('reporte.index');
-    })->name('reports');
+    })->name('reports'); */
+
+    Route::get('/view-reports',[MaterialesController::class,'getAllMaterialesForReport'])->name('getReporte'); //ruta para obtener datos para el reporte
+
 
     Route::get('/workers', [getUsersController::class, 'index'])->name('workers');
 
