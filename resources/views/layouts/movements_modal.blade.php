@@ -21,6 +21,26 @@
         </div>
         <!-- 📊 CONTENIDO DEL MODAL -->
         <div class="mt-4">
+            <!-- Filtros rápidos dentro del modal -->
+            <div class="flex flex-col md:flex-row gap-3 mb-3">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600 dark:text-gray-300">Fecha:</label>
+                    <select id="mvDateKind" class="h-9 rounded-md border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]">
+                        <option value="auto">Auto (act/creac)</option>
+                        <option value="created">Creación</option>
+                        <option value="updated">Actualización</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600 dark:text-gray-300">Tipo:</label>
+                    <select id="mvTypeFilter" class="h-9 rounded-md border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2]">
+                        <option value="">Todos</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="salida">Salida</option>
+                    </select>
+                </div>
+                <div class="flex-1"></div>
+            </div>
             <!-- 🏷️ Información del producto -->
             <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-4">
                 <div class="flex items-center">
@@ -80,8 +100,75 @@
         // Mostrar el modal
         document.getElementById('movementsModal').classList.remove('hidden');
 
-        // Aquí podrías hacer una llamada AJAX para cargar los datos reales
-        // loadMovementsData(productCode);
+        // Limpiar y mostrar placeholder mientras carga
+        const tbody = document.getElementById('movementsTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
+                    Cargando movimientos...
+                </td>
+            </tr>`;
+
+        // Cargar datos reales por AJAX
+        const routeBase = `{{ url('/materiales') }}`;
+        fetch(`${routeBase}/${encodeURIComponent(productCode)}/movimientos`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(r => r.json())
+            .then(json => {
+                if (!json || !json.success) throw new Error('Sin datos');
+                // Guardar movimientos y configurar filtros
+                const data = Array.isArray(json.movements) ? json.movements : [];
+                const dateKindSel = document.getElementById('mvDateKind');
+                const typeSel = document.getElementById('mvTypeFilter');
+
+                function render() {
+                    const kind = dateKindSel.value; // auto|created|updated
+                    const typeFilter = (typeSel.value || '').toLowerCase();
+                    const rows = data
+                        .filter(m => !typeFilter || (m.type_key || (m.tipo||'').toLowerCase()).includes(typeFilter))
+                        .map(m => {
+                            let fecha = m.fecha;
+                            if (kind === 'created') fecha = m.fecha_creacion || '-';
+                            if (kind === 'updated') fecha = m.fecha_actualizacion || '-';
+                            const tipo = m.tipo ?? '-';
+                            const cantidad = (m.cantidad ?? '') === '' ? '-' : m.cantidad;
+                            const usuario = m.usuario ?? '-';
+                            const badge = tipo.toLowerCase().includes('entrada') ? 'bg-green-100 text-green-800' : (tipo.toLowerCase().includes('salida') ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800');
+                            return `
+                                <tr>
+                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">${fecha || '-'}</td>
+                                    <td class="px-4 py-3 text-sm"><span class="px-2 py-1 rounded-full text-xs font-semibold ${badge}">${tipo}</span></td>
+                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">${cantidad}</td>
+                                    <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-200">${usuario}</td>
+                                </tr>`;
+                        });
+                    tbody.innerHTML = rows.length ? rows.join('') : `
+                    <tr>
+                        <td colspan="4" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-12 h-12 mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <p>No hay movimientos registrados</p>
+                                <p class="text-xs mt-1">Los movimientos aparecerán aquí cuando se registren</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                }
+
+                dateKindSel.onchange = render;
+                typeSel.onchange = render;
+                render();
+            })
+            .catch(() => {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-4 py-6 text-center text-red-600 dark:text-red-400">
+                            No se pudo cargar el historial de movimientos.
+                        </td>
+                    </tr>`;
+            });
 
         console.log('Abriendo historial para producto:', productCode);
     }

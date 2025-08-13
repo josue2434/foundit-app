@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ExternalUserService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class getUsersController extends Controller
 {
@@ -28,6 +29,10 @@ class getUsersController extends Controller
             // Obtener el token JWT desde la sesión
             $jwtToken = $request->session()->get('jwt_token');
             $userEmail = $request->session()->get('user.email');
+            // Filtros desde query string
+            $puestoFilter = strtolower(trim((string) $request->query('puesto', '')));
+            $estadoFilter = strtolower(trim((string) $request->query('estado', '')));
+            $qFilter = trim((string) $request->query('q', ''));
             
             if (!$jwtToken) {
                 Log::warning('Intento de obtener usuarios sin token JWT en sesión', [
@@ -62,6 +67,49 @@ class getUsersController extends Controller
                     $users = [];
                 }
                 
+                // Aplicar filtros en servidor si vienen en la request
+                if ($puestoFilter !== '' || $estadoFilter !== '' || $qFilter !== '') {
+                    $users = array_values(array_filter($users, function ($user) use ($puestoFilter, $estadoFilter, $qFilter) {
+                        // Normalizar puesto (tipo)
+                        $tipo = strtolower((string)($user['tipo'] ?? ''));
+
+                        // Normalizar estado (puede venir como string o boolean en claves 'estado' o 'activo')
+                        $estadoRaw = $user['estado'] ?? $user['activo'] ?? null;
+                        $estadoNorm = 'activo';
+                        if (is_bool($estadoRaw)) {
+                            $estadoNorm = $estadoRaw ? 'activo' : 'inactivo';
+                        } elseif (is_numeric($estadoRaw)) {
+                            $estadoNorm = ((int)$estadoRaw) === 1 ? 'activo' : 'inactivo';
+                        } elseif (is_string($estadoRaw)) {
+                            $estadoNorm = strtolower($estadoRaw);
+                        }
+
+                        $matchesPuesto = $puestoFilter === '' ? true : ($tipo === $puestoFilter);
+                        $matchesEstado = $estadoFilter === '' ? true : ($estadoNorm === $estadoFilter);
+
+                        // Filtro por nombre completo o correo (insensible a acentos y mayúsculas)
+                        if ($qFilter !== '') {
+                            $qNorm = Str::lower(Str::ascii($qFilter));
+                            $fullName = trim((string)($user['name'] ?? '') . ' ' . (string)($user['apellido'] ?? ''));
+                            $email = (string)($user['email'] ?? '');
+                            $fullNorm = Str::lower(Str::ascii($fullName));
+                            $emailNorm = Str::lower(Str::ascii($email));
+                            $matchesQuery = (strpos($fullNorm, $qNorm) !== false) || (strpos($emailNorm, $qNorm) !== false);
+                        } else {
+                            $matchesQuery = true;
+                        }
+
+                        return $matchesPuesto && $matchesEstado && $matchesQuery;
+                    }));
+
+                    Log::info('CONTROLADOR: Filtros aplicados', [
+                        'puesto' => $puestoFilter,
+                        'estado' => $estadoFilter,
+                        'q' => $qFilter,
+                        'result_count' => count($users)
+                    ]);
+                }
+
                 Log::info('CONTROLADOR: Datos procesados para vista', [
                     'users_count' => count($users),
                     'users_type' => gettype($users),

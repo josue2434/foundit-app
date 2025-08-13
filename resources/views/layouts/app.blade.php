@@ -72,9 +72,9 @@
                         </button>
                         <div class="collapsible-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
                             <div class="py-2 space-y-1">
-                                <a href="{{ route('part.with.material') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
+                                {{-- <a href="{{ route('part.with.material') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
                                     Surtido
-                                </a>
+                                </a> --}}
                                 <a href="{{ route('stock.view') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
                                     Almacén
                                 </a>
@@ -98,15 +98,15 @@
                         </button>
                         <div class="collapsible-content overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
                             <div class="py-2 space-y-1">
-                                <a href="{{ route('critical.products') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
-                                    Bajo Inventario
-                                </a>
+                                    {{-- <a href="{{ route('critical.products') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
+                                        Bajo Inventario
+                                    </a> --}}
                                 <a href="{{ route('total.products') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
                                     Materiales Totales
                                 </a>
-                                <a href="{{ route('expensive.products') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
+                                {{-- <a href="{{ route('expensive.products') }}" class="flex items-center px-11 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-all duration-150">
                                     Materiales Alto Valor
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>

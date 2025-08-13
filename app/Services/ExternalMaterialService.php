@@ -151,4 +151,48 @@ class ExternalMaterialService{
             ];
         }
     }
+
+    /**
+     * Obtener historial de movimientos para un material específico
+     */
+    public function getMaterialMovements(string $id, ?string $token = null): array
+    {
+        try {
+            $headers = $this->getCommonHeaders();
+            if ($token) {
+                $headers['Authorization'] = 'Bearer ' . $token;
+            }
+
+            // Intentar endpoint dedicado si existe en la API; si no, retornar fallo controlado
+            $urlCandidates = [
+                $this->baseUrl . '/materiales/' . urlencode($id) . '/movimientos',
+                $this->baseUrl . '/materiales/' . urlencode($id) . '/movements',
+            ];
+
+            foreach ($urlCandidates as $url) {
+                $response = Http::timeout($this->timeout)->withHeaders($headers)->get($url);
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $movs = $data['movimientos'] ?? $data['movements'] ?? $data['data'] ?? [];
+                    return [
+                        'success' => true,
+                        'data' => is_array($movs) ? $movs : [],
+                        'status_code' => $response->status(),
+                    ];
+                }
+            }
+
+            return [
+                'success' => false,
+                'error' => 'No disponible endpoint de movimientos',
+                'status_code' => 404,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => 'Error de conexión con la API externa: ' . $e->getMessage(),
+                'status_code' => 500,
+            ];
+        }
+    }
 }

@@ -12,18 +12,18 @@
 
         <!-- Búsqueda y Filtros -->
         <div class="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <div class="flex flex-col md:flex-row gap-4">
-                <!-- Búsqueda por nombre o correo -->
+            <form method="GET" action="{{ route('view_workers') }}" class="flex flex-col md:flex-row gap-4" id="filtersForm">
+                <!-- Búsqueda por nombre o correo (solo UI por ahora) -->
                 <div class="flex-1">
                     <div class="relative flex">
-                        <input type="text" placeholder="Buscar por nombre o correo..."
+                        <input name="q" value="{{ request('q') }}" type="text" placeholder="Buscar por nombre o correo..."
                             class="w-full h-10 pl-10 pr-4 rounded-l-lg border border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50"
                             title="Ingrese el nombre o correo del trabajador que desea buscar">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-[#2045c2]"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        <button type="button"
+                        <button type="submit"
                             class="h-10 px-4 bg-[#2045c2] text-white rounded-r-lg hover:bg-[#1a3aa3] shadow-md"
                             title="Iniciar búsqueda con los criterios ingresados">
                             Buscar
@@ -31,19 +31,18 @@
                     </div>
                 </div>
                 <!-- Filtro por puesto -->
-                <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar trabajadores por puesto">
-                    <option value="">Todos los puestos</option>
-                    <option value="operador">Operador</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="admin">Administrador</option>
+                <select name="puesto" class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar trabajadores por puesto" onchange="document.getElementById('filtersForm').submit()">
+                    <option value="" {{ request('puesto')==='' ? 'selected' : '' }}>Todos los puestos</option>
+                    <option value="operador" {{ request('puesto')==='operador' ? 'selected' : '' }}>Operador</option>
+                    <option value="admin" {{ request('puesto')==='admin' ? 'selected' : '' }}>Administrador</option>
                 </select>
                 <!-- Filtro por estado -->
-                <select class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar trabajadores por estado (activo/inactivo)">
-                    <option value="">Todos los estados</option>
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
+                <select name="estado" class="h-10 rounded-lg border-gray-300 focus:border-[#2045c2] focus:ring-[#2045c2] focus:ring-opacity-50" title="Filtrar trabajadores por estado (activo/inactivo)" onchange="document.getElementById('filtersForm').submit()">
+                    <option value="" {{ request('estado')==='' ? 'selected' : '' }}>Todos los estados</option>
+                    <option value="activo" {{ request('estado')==='activo' ? 'selected' : '' }}>Activo</option>
+                    <option value="inactivo" {{ request('estado')==='inactivo' ? 'selected' : '' }}>Inactivo</option>
                 </select>
-            </div>
+            </form>
         </div>
 
         <!-- Tabla de Trabajadores -->
