@@ -163,7 +163,7 @@ class ExternalMaterialService{
                 $headers['Authorization'] = 'Bearer ' . $token;
             }
 
-            // Intentar endpoint dedicado si existe en la API; si no, retornar fallo controlado
+            // Intentar endpoint dedicado si la api lo retorna; si no, retornar fallo controlado
             $urlCandidates = [
                 $this->baseUrl . '/materiales/' . urlencode($id) . '/movimientos',
                 $this->baseUrl . '/materiales/' . urlencode($id) . '/movements',
