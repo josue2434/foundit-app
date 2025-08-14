@@ -1,61 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+	<img src="public/img/logofound-it.jpg" alt="Found It" height="120"/>
 </p>
 
-## About Laravel
+# Found It — Gestión de Inventario y Reportes (Laravel + MongoDB)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplicación web para la gestión de materiales, almacenes y reportes operativos. Permite filtrar por almacén y tipo de movimiento, consultar historial de movimientos por material (incluye fecha, tipo, cantidad y usuario), y generar reportes con exportación CSV. Interactúa con una API externa para obtener información actualizada y usa MongoDB como base de datos.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Funcionalidades principales
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Inventario de materiales con filtros por:
+	- Almacén y tipo de movimiento (Entrada/Salida)
+	- Búsqueda por nombre o código
+- Historial de movimientos por material en un modal reutilizable:
+	- Muestra Fecha (creación/actualización), Tipo, Cantidad y Usuario
+	- Filtros rápidos dentro del modal
+- Reportes de materiales:
+	- Filtros por período (día, semana, mes, todos), tipo de movimiento y búsqueda
+	- Exportación a CSV
+- UI con Tailwind CSS y Vite
 
-## Learning Laravel
+## Requisitos previos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP 8.2+
+- Composer 2+
+- Node.js 18+ y npm 9+
+- MongoDB (local o remoto)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Instalación y configuración
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1) Clonar el repositorio y entrar al proyecto
 
-## Laravel Sponsors
+```powershell
+git clone <URL_DEL_REPO>
+cd foundit-app
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2) Instalar dependencias de PHP y JavaScript
 
-### Premium Partners
+```powershell
+composer install
+npm install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3) Configurar el entorno (.env)
 
-## Contributing
+```powershell
+copy .env.example .env
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Configura la conexión a MongoDB (ajústalo a tu entorno):
 
-## Code of Conduct
+```env
+DB_CONNECTION=mongodb
+DB_HOST=127.0.0.1
+DB_PORT=27017
+DB_DATABASE=foundit
+DB_USERNAME=
+DB_PASSWORD=
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Si usas cadena de conexión DSN, puedes emplear `MONGODB_URI` en vez de host/puerto/usuario/clave.
 
-## Security Vulnerabilities
+Configura también la API externa (si aplica):
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+EXTERNAL_API_BASE_URL=http://localhost:3000
+EXTERNAL_API_TIMEOUT=30
+```
 
-## License
+4) Añadir/Confirmar dependencia de MongoDB para Laravel
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+El proyecto ya incluye `jenssegers/mongodb`. Si fuese necesario reinstalarla:
+
+```powershell
+composer require jenssegers/mongodb
+```
+
+5) Tailwind CSS (si aún no está inicializado en tu entorno)
+
+```powershell
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+6) Ejecutar en desarrollo
+
+La forma recomendada (usa el script que levanta servidor Laravel, queue y Vite en paralelo):
+
+```powershell
+composer run dev
+```
+
+Alternativas manuales si lo prefieres:
+
+```powershell
+php artisan serve
+npm run dev
+```
+
+Para compilar assets en producción:
+
+```powershell
+npm run build
+```
+
+## Estructura rápida de rutas/ vistas clave
+
+- Inventario: `resources/views/inventory/materiales.blade.php`
+- Reportes: `resources/views/reporte/index.blade.php`
+- Modal de historial reutilizable: `resources/views/layouts/movements_modal.blade.php`
+- Endpoint historial JSON: `routes/web.php` → `MaterialesController@historialMovimientos`
+
+## Tips y solución de problemas
+
+- Si el historial no abre o no carga datos, verifica en la consola del navegador:
+	- Que exista `window.openMovementsModal`
+	- Que la petición a `/materiales/{id}/movimientos` devuelva `success: true`
+- Limpieza de cachés de Laravel si ves comportamientos extraños:
+
+```powershell
+php artisan optimize:clear
+```
+
+## Licencia
+
+Este proyecto se distribuye bajo licencia MIT.
+
+## Autor
+Proyecto Desarrollado con fines Educativos "UTJ" Universidad Tecnologica de Jalisco (Team) SIXTH MIND
