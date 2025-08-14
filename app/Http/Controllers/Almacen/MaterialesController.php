@@ -240,11 +240,11 @@ class MaterialesController extends Controller
             }
 
             // 2) Filtros
-            $period = $request->query('period', 'month'); // day|week|month|all
+            $period = $request->query('period', 'month'); // dia|semana|mes|todo
             $movementType = $request->query('movement_type', ''); // entrada|salida|''
-            $search = trim((string) $request->query('search', ''));
+            $search = trim((string) $request->query('search', '')); // búsqueda
 
-            $now = Carbon::now();
+            $now = Carbon::now(); // Fecha y hora actual
             $startDate = null;
             switch ($period) {
                 case 'day':
@@ -321,7 +321,7 @@ class MaterialesController extends Controller
                 return 0;
             });
 
-            // 3.1) Exportación CSV si se solicita
+            // 3.1) Exportación CSV si se solicita esto es para el reporte
             if ($request->filled('export')) {
                 $filename = 'reporte_' . Carbon::now()->format('Ymd_His') . '.csv';
                 return response()->streamDownload(function () use ($filtered) {
@@ -378,7 +378,7 @@ class MaterialesController extends Controller
             ]);
 
         }catch (\Exception $e) {
-            Log::error('Error en getAllMaterialesForReport: '.$e->getMessage());
+            Log::error('Error en getAllMaterialesForReport: '.$e->getMessage()); //Debug
             return view('reporte.index', [
                 'materiales' => [],
                 'error' => 'Error al obtener los materiales: '.$e->getMessage(),
@@ -442,7 +442,7 @@ class MaterialesController extends Controller
                 } catch (\Throwable $t) {}
             }
 
-            // Normalizar a estructura común
+            // Normalizar a estructura comun
             $normalized = [];
             if (is_array($movements)) {
                 foreach ($movements as $mv) {
@@ -470,7 +470,7 @@ class MaterialesController extends Controller
                     $createdRaw = $mv['fecha'] ?? $mv['date'] ?? $mv['created_at'] ?? $mv['createdAt'] ?? $mv['timestamp'] ?? $mv['time'] ?? null;
                     $updatedRaw = $mv['updated_at'] ?? $mv['updatedAt'] ?? null;
                     $fechaDisplay = $updatedRaw ?: $createdRaw;
-                    try { $fechaFmt = $fechaDisplay ? Carbon::parse($fechaDisplay)->format('d/m/Y H:i') : null; } catch (\Exception $e) { $fechaFmt = is_string($fechaDisplay) ? $fechaDisplay : null; }
+                    try { $fechaFmt = $fechaDisplay ? Carbon::parse($fechaDisplay)->format('d/m/Y H:i') : null; } catch (\Exception $e) { $fechaFmt = is_string($fechaDisplay) ? $fechaDisplay : null; } //Carbon::parse($fechaDisplay)->format('d/m/Y H:i') esto sirve para formatear la fecha
                     try { $createdFmt = $createdRaw ? Carbon::parse($createdRaw)->format('d/m/Y H:i') : null; } catch (\Exception $e) { $createdFmt = is_string($createdRaw) ? $createdRaw : null; }
                     try { $updatedFmt = $updatedRaw ? Carbon::parse($updatedRaw)->format('d/m/Y H:i') : null; } catch (\Exception $e) { $updatedFmt = is_string($updatedRaw) ? $updatedRaw : null; }
                     $cantidad = $mv['cantidad'] ?? $mv['cantidad_total'] ?? $mv['quantity'] ?? $mv['qty'] ?? null;
@@ -535,7 +535,7 @@ class MaterialesController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('Error en historialMovimientos: '.$e->getMessage(), ['id' => $id]);
+            Log::error('Error en historialMovimientos: '.$e->getMessage(), ['id' => $id]); //Debug para ver el error y cachar el error
             return response()->json([
                 'success' => false,
                 'message' => 'Error al obtener movimientos',
